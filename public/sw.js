@@ -1,5 +1,5 @@
 const CACHE = "arcade-v1";
-const ASSETS = ["/", "/manifest.json", "/icon-192.png", "/icon-512.png"];
+const ASSETS = ["/", "/manifest.json", "/icon-192.png", "/icon-512.png", "/shot-hub.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
