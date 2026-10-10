@@ -12,7 +12,7 @@
   --neon2: #ff00e5;
   --accent: #faff00;
   --text: #c8c8d0;
-  --muted: #5a5a73;
+  --muted: #8a8aa3; /* 6.24:1 sobre negro (AA) — era #5a5a73 3.14:1 */
   --green: #33ff33;
   --scanline-alpha: 0.08;
 }
@@ -25,7 +25,7 @@ body.matrix {
   --neon2: #00cc66;
   --accent: #ccff00;
   --text: #c0e8c0;
-  --muted: #4a6a4a;
+  --muted: #6a9a6a; /* 6.44:1 sobre verde oscuro (AA) — era #4a6a4a 3.45:1 */
 }
 
 .egg-toast {
@@ -285,6 +285,15 @@ button.btn-back {
 .btn-back:hover {
   box-shadow: 0 0 10px var(--neon);
   color: var(--neon);
+}
+
+/* Foco visible para navegación por teclado (nativo intacto, solo estilo) */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+canvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .hud {
