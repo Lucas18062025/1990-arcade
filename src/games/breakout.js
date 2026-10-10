@@ -86,14 +86,16 @@ export function mountBreakout(root) {
     started = true;
     hideOverlay();
     cancelAnimationFrame(raf);
-    loop();
-  }
-
-  function loop() {
-    if (!alive) return;
-    step();
-    draw();
-    raf = requestAnimationFrame(loop);
+    let last = performance.now();
+    const loop = (t) => {
+      if (!alive) return;
+      const dt = Math.min(50, t - last) / 16.667; // 1 = 60fps, igual en cualquier celu
+      last = t;
+      step(dt);
+      draw();
+      raf = requestAnimationFrame(loop);
+    };
+    loop(last);
   }
 
   function burst(x, y, color) {
@@ -102,26 +104,26 @@ export function mountBreakout(root) {
     }
   }
 
-  function step() {
+  function step(dt) {
     for (const p of parts) {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life--;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.life -= dt;
     }
     parts = parts.filter((p) => p.life > 0);
-    if (shake > 0) shake--;
+    if (shake > 0) shake -= dt;
     for (const st of stars) {
-      st.y += st.v;
+      st.y += st.v * dt;
       if (st.y > H) {
         st.y = 0;
         st.x = Math.random() * W;
       }
     }
-    if (moveL) paddle.x = Math.max(0, paddle.x - paddle.speed);
-    if (moveR) paddle.x = Math.min(W - paddle.w, paddle.x + paddle.speed);
+    if (moveL) paddle.x = Math.max(0, paddle.x - paddle.speed * dt);
+    if (moveR) paddle.x = Math.min(W - paddle.w, paddle.x + paddle.speed * dt);
 
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+    ball.x += ball.dx * dt;
+    ball.y += ball.dy * dt;
 
     if (ball.x - ball.r < 0 || ball.x + ball.r > W) ball.dx *= -1;
     if (ball.y - ball.r < 0) ball.dy *= -1;

@@ -52,8 +52,10 @@ function renderHub() {
   const nameInput = document.getElementById("player-name");
   if (nameInput) {
     nameInput.value = playerName();
-    nameInput.onchange = () => {
+    nameInput.oninput = () => {
       setPlayerName(nameInput.value);
+    };
+    nameInput.onchange = () => {
       nameInput.value = playerName();
     };
   }

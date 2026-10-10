@@ -23,6 +23,12 @@ export function mountSnake(root) {
         <div class="crt-reflection"></div>
         <div id="snake-overlay" class="overlay"></div>
       </div>
+      <div class="snake-touch">
+        <button data-d="left">◀</button>
+        <button data-d="up">▲</button>
+        <button data-d="down">▼</button>
+        <button data-d="right">▶</button>
+      </div>
       <p class="help">FLECHAS / WASD MOVER · R REINICIAR · ESC HUB</p>
     </div>`;
 
@@ -257,6 +263,25 @@ export function mountSnake(root) {
     e.stopPropagation();
     toggleFS();
   };
+  function steer(d) {
+    if (d === "up" && dir.y !== 1) nextDir = { x: 0, y: -1 };
+    else if (d === "down" && dir.y !== -1) nextDir = { x: 0, y: 1 };
+    else if (d === "left" && dir.x !== 1) nextDir = { x: -1, y: 0 };
+    else if (d === "right" && dir.x !== -1) nextDir = { x: 1, y: 0 };
+  }
+  root.querySelectorAll(".snake-touch button").forEach((b) => {
+    const go = (e) => {
+      e.preventDefault();
+      if (!started || !alive) {
+        reset();
+        start();
+        return;
+      }
+      steer(b.dataset.d);
+    };
+    b.addEventListener("touchstart", go, { passive: false });
+    b.addEventListener("mousedown", go);
+  });
   cv.addEventListener("click", onTap);
   overlay.addEventListener("click", () => {
     if (!started || !alive) {

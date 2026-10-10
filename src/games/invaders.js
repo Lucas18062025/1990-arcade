@@ -98,15 +98,21 @@ export function mountInvaders(root) {
     started = true;
     hideOverlay();
     cancelAnimationFrame(raf);
-    let frame = 0;
-    const loop = () => {
+    let last = performance.now();
+    let eAcc = 0;
+    const loop = (t) => {
       if (!alive) return;
-      frame++;
-      step(frame);
+      const dtMs = Math.min(50, t - last);
+      const dtF = dtMs / 16.667;
+      last = t;
+      eAcc += dtMs;
+      const doMove = eAcc >= etick * 16.667;
+      if (doMove) eAcc = 0;
+      step(dtF, doMove);
       draw();
       raf = requestAnimationFrame(loop);
     };
-    loop();
+    loop(last);
   }
 
   function addScore(n) {
@@ -120,27 +126,27 @@ export function mountInvaders(root) {
     }
   }
 
-  function step(frame) {
+  function step(dtF, doMove) {
     // starfield scroll
     for (const st of stars) {
-      st.y += st.v;
+      st.y += st.v * dtF;
       if (st.y > H) {
         st.y = 0;
         st.x = Math.random() * W;
       }
     }
-    if (shake > 0) shake--;
-    if (player.invuln > 0) player.invuln--;
-    if (moveL) player.x = Math.max(0, player.x - player.speed);
-    if (moveR) player.x = Math.min(W - player.w, player.x + player.speed);
-    if (player.cd > 0) player.cd--;
+    if (shake > 0) shake -= dtF;
+    if (player.invuln > 0) player.invuln -= dtF;
+    if (moveL) player.x = Math.max(0, player.x - player.speed * dtF);
+    if (moveR) player.x = Math.min(W - player.w, player.x + player.speed * dtF);
+    if (player.cd > 0) player.cd -= dtF;
 
     // player bullets
-    for (const b of bullets) b.y -= 7;
+    for (const b of bullets) b.y -= 7 * dtF;
     bullets = bullets.filter((b) => b.y > -10);
 
     // enemies move
-    if (frame % etick === 0) {
+    if (doMove) {
       let hitEdge = false;
       for (const e of enemies) {
         if (!e.alive) continue;
@@ -163,7 +169,7 @@ export function mountInvaders(root) {
       }
     }
 
-    for (const b of ebullets) b.y += b.vy;
+    for (const b of ebullets) b.y += b.vy * dtF;
     ebullets = ebullets.filter((b) => b.y < H + 10);
 
     // collisions player bullet vs enemy
