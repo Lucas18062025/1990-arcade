@@ -23,6 +23,11 @@ export function mountInvaders(root) {
         <div class="crt-reflection"></div>
         <div id="inv-overlay" class="overlay"></div>
       </div>
+      <div class="inv-touch">
+        <button data-a="left">◀</button>
+        <button data-a="fire">● FUEGO</button>
+        <button data-a="right">▶</button>
+      </div>
       <p class="help">← → / A D MOVER · ESPACIO DISPARAR · R REINICIAR · ESC HUB</p>
     </div>`;
 
@@ -337,6 +342,30 @@ export function mountInvaders(root) {
     e.stopPropagation();
     toggleFS();
   };
+  root.querySelectorAll(".inv-touch button").forEach((b) => {
+    const a = b.dataset.a;
+    const down = (e) => {
+      e.preventDefault();
+      if (!started || !alive) {
+        reset();
+        start();
+        return;
+      }
+      if (a === "left") moveL = true;
+      else if (a === "right") moveR = true;
+      else if (a === "fire") shoot();
+    };
+    const up = (e) => {
+      e.preventDefault();
+      if (a === "left") moveL = false;
+      else if (a === "right") moveR = false;
+    };
+    b.addEventListener("touchstart", down, { passive: false });
+    b.addEventListener("touchend", up);
+    b.addEventListener("touchcancel", up);
+    b.addEventListener("mousedown", down);
+    b.addEventListener("mouseup", up);
+  });
   cv.addEventListener("mousemove", (e) => paddleTo(e.clientX));
   cv.addEventListener("touchmove", (e) => {
     paddleTo(e.touches[0].clientX);

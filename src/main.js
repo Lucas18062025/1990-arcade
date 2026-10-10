@@ -134,6 +134,11 @@ renderRoute();
 
 console.log("[arcade] hub Fase 1 OK", games.length, "slots");
 
+// PWA: service worker solo en https o localhost (offline + instalable)
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+}
+
 // Easter egg: teclear 1990 alterna paleta matrix/neón (persiste)
 const PAL_KEY = "arcade-palette";
 if (localStorage.getItem(PAL_KEY) === "matrix") document.body.classList.add("matrix");

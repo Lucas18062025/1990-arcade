@@ -188,6 +188,23 @@ body {
   margin-left: 0.4rem;
 }
 
+.inv-touch {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.inv-touch button {
+  border: 1px solid var(--neon);
+  border-radius: 8px;
+  padding: 0.7rem 1.1rem;
+  background: #12122b;
+  color: #e8e8f0;
+  font-size: 1rem;
+  touch-action: none;
+  user-select: none;
+}
+
 #top-list div {
   padding: 0.15rem 0;
 }
@@ -275,6 +292,7 @@ button.btn-back {
 /* The actual game canvas */
 .canvas-box canvas {
   width: 100%;
+  touch-action: none;
   border: 3px solid #222;
   border-radius: 6px;
   background: #000;
