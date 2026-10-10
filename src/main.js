@@ -60,22 +60,40 @@ function renderHub() {
     };
   }
   if (board) {
-    board.textContent = "Cargando ranking…";
-    let done = false;
+    const FILTERS = ["all", "snake", "breakout", "invaders", "tetris"];
+    let filter = "all";
     const esc = (s) =>
       String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-    setTimeout(() => {
-      if (!done && document.getElementById("top-list")) {
-        board.innerHTML = "<div>Ranking no disponible (offline o bloqueado).</div>";
-      }
-    }, 10000);
-    topScores(5).then((rows) => {
-      done = true;
-      if (!document.getElementById("top-list")) return;
-      board.innerHTML = rows.length
-        ? rows.map((r, i) => `<div>${i + 1}. ${esc(r.game)} — ${esc(r.name)} · ${Number(r.score) || 0}</div>`).join("")
-        : "<div>Sin scores todavía. ¡Jugá y sé el primero!</div>";
+    const bar = document.createElement("div");
+    bar.className = "mt-2 flex gap-2 flex-wrap text-xs";
+    bar.innerHTML = FILTERS.map(
+      (f) => `<button data-f="${f}" class="btn-back" aria-pressed="${f === "all"}">${f === "all" ? "TODOS" : f.toUpperCase()}</button>`
+    ).join("");
+    board.before(bar);
+    const load = () => {
+      board.textContent = "Cargando ranking…";
+      let done = false;
+      setTimeout(() => {
+        if (!done && document.getElementById("top-list")) {
+          board.innerHTML = "<div>Ranking no disponible (offline o bloqueado).</div>";
+        }
+      }, 10000);
+      topScores(5, filter === "all" ? null : filter).then((rows) => {
+        done = true;
+        if (!document.getElementById("top-list")) return;
+        board.innerHTML = rows.length
+          ? rows.map((r, i) => `<div>${i + 1}. ${esc(r.game)} — ${esc(r.name)} · ${Number(r.score) || 0}</div>`).join("")
+          : "<div>Sin scores todavía. ¡Jugá y sé el primero!</div>";
+      });
+    };
+    bar.querySelectorAll("button").forEach((b) => {
+      b.onclick = () => {
+        filter = b.dataset.f;
+        bar.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+        load();
+      };
     });
+    load();
   }
 }
 
@@ -135,6 +153,15 @@ window.addEventListener("hashchange", renderRoute);
 renderRoute();
 
 console.log("[arcade] hub Fase 1 OK", games.length, "slots");
+
+// Versión desde build (vite define __APP_VERSION), sin hardcodear en HTML
+try {
+  const v = typeof __APP_VERSION !== "undefined" ? __APP_VERSION : null;
+  if (v) {
+    const el = document.getElementById("app-ver");
+    if (el) el.textContent = v;
+  }
+} catch { /* noop */ }
 
 // PWA: service worker solo en https o localhost (offline + instalable)
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {

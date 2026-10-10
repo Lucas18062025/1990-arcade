@@ -9,7 +9,7 @@ export function mountInvaders(root) {
       <div class="game-top">
         <div class="top-left">
           <a href="#/" class="btn-back">← HUB (ESC)</a>
-          <button id="inv-fs" class="btn-back" title="Pantalla completa">⛶</button>
+          <button id="inv-fs" class="btn-back" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
         </div>
         <div class="hud">
           <span>SCORE <b id="inv-score">0</b></span>
@@ -19,14 +19,14 @@ export function mountInvaders(root) {
       </div>
       <div class="canvas-box power-on">
         <div class="crt-glow"></div>
-        <canvas id="inv-cv" width="${W}" height="${H}"></canvas>
+        <canvas id="inv-cv" width="${W}" height="${H}" role="img" aria-label="Juego Invaders: mové con flechas y dispará con espacio, 3 vidas por oleada" tabindex="0"></canvas>
         <div class="crt-reflection"></div>
         <div id="inv-overlay" class="overlay"></div>
       </div>
       <div class="inv-touch">
-        <button data-a="left">◀</button>
-        <button data-a="fire">● FUEGO</button>
-        <button data-a="right">▶</button>
+        <button data-a="left" aria-label="Mover izquierda">◀</button>
+        <button data-a="fire" aria-label="Disparar">● FUEGO</button>
+        <button data-a="right" aria-label="Mover derecha">▶</button>
       </div>
       <p class="help">← → / A D MOVER · ESPACIO DISPARAR · R REINICIAR · ESC HUB</p>
     </div>`;

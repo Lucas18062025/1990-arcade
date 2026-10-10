@@ -6,7 +6,19 @@
     <meta name="theme-color" content="#000000" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
-    <meta name="description" content="1990 Arcade — Snake, Breakout, Invaders y Tetris retro neón." />
+    <meta name="description" content="1990 Arcade — Snake, Breakout, Invaders y Tetris retro neón. Jugá gratis en el navegador." />
+    <link rel="canonical" href="https://1990-arcade.pages.dev/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="1990 Arcade" />
+    <meta property="og:title" content="1990 Arcade — Juegos retro gratis en el navegador" />
+    <meta property="og:description" content="Snake, Breakout, Invaders y Tetris con estética neón + ranking online. Jugá gratis." />
+    <meta property="og:url" content="https://1990-arcade.pages.dev/" />
+    <meta property="og:image" content="https://1990-arcade.pages.dev/shot-hub.png" />
+    <meta property="og:locale" content="es_AR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="1990 Arcade — Juegos retro gratis" />
+    <meta name="twitter:description" content="Snake · Breakout · Invaders · Tetris + ranking online." />
+    <meta name="twitter:image" content="https://1990-arcade.pages.dev/shot-hub.png" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0a1a'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='%2300f0ff'%3E▶%3C/text%3E%3C/svg%3E" />
     <title>1990 Arcade</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,16 +40,29 @@
             <p class="text-xs text-muted">RANKING ONLINE</p>
             <h2 class="text-xl font-bold mt-1">TOP 5</h2>
             <div class="mt-2 text-sm">
-              <label>JUGADOR <input id="player-name" maxlength="12" /></label>
+              <label for="player-name">JUGADOR <input id="player-name" maxlength="12" placeholder="ANON" aria-label="Nombre de jugador para el ranking" autocomplete="nickname" /></label>
             </div>
             <div id="top-list" class="mt-2 text-sm text-muted">Cargando ranking…</div>
           </aside>
         </div>
         <footer class="text-center mt-12 text-muted text-sm">
-          <p>R = reiniciar · Esc = volver al hub · v0.3.0</p>
+          <p>R = reiniciar · Esc = volver al hub · v<span id="app-ver">0.3.0</span></p>
         </footer>
       </main>
     </div>
     <script type="module" src="/src/main.js"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "1990 Arcade",
+      "description": "Hub retro con Snake, Breakout, Invaders y Tetris + ranking online.",
+      "genre": "Arcade",
+      "inLanguage": "es-AR",
+      "url": "https://1990-arcade.pages.dev/",
+      "author": { "@type": "Person", "name": "Lucas18062025" },
+      "gamePlatform": "Web browser"
+    }
+    </script>
   </body>
 </html>

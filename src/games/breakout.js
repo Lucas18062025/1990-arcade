@@ -9,7 +9,7 @@ export function mountBreakout(root) {
       <div class="game-top">
         <div class="top-left">
           <a href="#/" class="btn-back">← HUB (ESC)</a>
-          <button id="brk-fs" class="btn-back" title="Pantalla completa">⛶</button>
+          <button id="brk-fs" class="btn-back" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
         </div>
         <div class="hud">
           <span>SCORE <b id="brk-score">0</b></span>
@@ -18,7 +18,7 @@ export function mountBreakout(root) {
       </div>
       <div class="canvas-box power-on">
         <div class="crt-glow"></div>
-        <canvas id="brk-cv" width="${W}" height="${H}"></canvas>
+        <canvas id="brk-cv" width="${W}" height="${H}" role="img" aria-label="Juego Breakout: mové la paleta con flechas o mouse y rompé los bloques" tabindex="0"></canvas>
         <div class="crt-reflection"></div>
         <div id="brk-overlay" class="overlay"></div>
       </div>

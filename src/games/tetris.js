@@ -23,7 +23,7 @@ export function mountTetris(root) {
       <div class="game-top">
         <div class="top-left">
           <a href="#/" class="btn-back">← Hub (Esc)</a>
-          <button id="tet-fs" class="btn-back" title="Pantalla completa">⛶</button>
+          <button id="tet-fs" class="btn-back" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
         </div>
         <div class="hud">
           <span>SCORE <b id="tet-score">0</b></span>
@@ -32,15 +32,15 @@ export function mountTetris(root) {
         </div>
       </div>
       <div class="canvas-box" style="--ar:.5">
-        <canvas id="tet-cv" width="${W}" height="${H}"></canvas>
+        <canvas id="tet-cv" width="${W}" height="${H}" role="img" aria-label="Juego Tetris: mové con flechas, rotá con arriba, espacio para caída" tabindex="0"></canvas>
         <div id="tet-overlay" class="overlay"></div>
       </div>
       <div class="tet-touch">
-        <button data-a="left">◀</button>
-        <button data-a="rot">⟳</button>
-        <button data-a="right">▶</button>
-        <button data-a="down">▼</button>
-        <button data-a="drop">⤓</button>
+        <button data-a="left" aria-label="Mover izquierda">◀</button>
+        <button data-a="rot" aria-label="Rotar pieza">⟳</button>
+        <button data-a="right" aria-label="Mover derecha">▶</button>
+        <button data-a="down" aria-label="Bajar pieza">▼</button>
+        <button data-a="drop" aria-label="Caída instantánea">⤓</button>
       </div>
       <p class="text-muted text-sm help">← → mover · ↓ bajar · ↑ rotar · Espacio caer · R reiniciar · Esc hub</p>
     </div>

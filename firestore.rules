@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    // Ranking: lectura pública, escritura validada (sin auth, anti-spam básico).
+    // Aplicar en Firebase Console > Firestore > Rules. Crear índice compuesto
+    // game ASC + score DESC si usan el filtro por juego con orderBy.
+    match /scores/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['game', 'name', 'score', 'at'])
+        && request.resource.data.game in ['snake', 'breakout', 'invaders', 'tetris']
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 12
+        && request.resource.data.score is number
+        && request.resource.data.score >= 0
+        && request.resource.data.score <= 999999;
+      allow update, delete: if false;
+    }
+    match /{rest=**} {
+      allow read, write: if false;
+    }
+  }
+}
