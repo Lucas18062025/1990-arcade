@@ -49,14 +49,28 @@ export async function saveBest(game, score) {
   }
 }
 
-export async function topScores(n = 5) {
+export async function topScores(n = 5, game = null) {
   try {
     const d = await db();
     if (!d) return [];
-    const { collection, query, orderBy, limit, getDocs } = await import(/* @vite-ignore */ FS_URL);
-    const q = query(collection(d, "scores"), orderBy("score", "desc"), limit(n));
-    const snap = await getDocs(q);
-    return snap.docs.map((x) => x.data());
+    const mod = await import(/* @vite-ignore */ FS_URL);
+    const { collection, query, orderBy, limit, getDocs, where } = mod;
+    const ref = collection(d, "scores");
+    try {
+      const q = game
+        ? query(ref, where("game", "==", game), orderBy("score", "desc"), limit(n))
+        : query(ref, orderBy("score", "desc"), limit(n));
+      const snap = await getDocs(q);
+      return snap.docs.map((x) => x.data());
+    } catch {
+      // Sin índice compuesto: fallback sin orderBy + orden local
+      if (!game) return [];
+      const snap = await getDocs(query(ref, where("game", "==", game), limit(n * 4)));
+      return snap.docs
+        .map((x) => x.data())
+        .sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0))
+        .slice(0, n);
+    }
   } catch {
     return [];
   }

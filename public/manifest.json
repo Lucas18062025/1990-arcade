@@ -22,9 +22,9 @@
     { "src": "/shot-hub.png", "sizes": "1070x503", "type": "image/png", "form_factor": "wide" }
   ],
   "shortcuts": [
-    { "name": "Snake", "url": "/#snake", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Breakout", "url": "/#breakout", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Invaders", "url": "/#invaders", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Tetris", "url": "/#tetris", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+    { "name": "Snake", "url": "/#/snake", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Breakout", "url": "/#/breakout", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Invaders", "url": "/#/invaders", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Tetris", "url": "/#/tetris", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ]
 }

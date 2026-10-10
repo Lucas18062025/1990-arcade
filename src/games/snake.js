@@ -10,7 +10,7 @@ export function mountSnake(root) {
       <div class="game-top">
         <div class="top-left">
           <a href="#/" class="btn-back">← HUB (ESC)</a>
-          <button id="snake-fs" class="btn-back" title="Pantalla completa">⛶</button>
+          <button id="snake-fs" class="btn-back" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
         </div>
         <div class="hud">
           <span>SCORE <b id="snake-score">0</b></span>
@@ -19,15 +19,15 @@ export function mountSnake(root) {
       </div>
       <div class="canvas-box power-on">
         <div class="crt-glow"></div>
-        <canvas id="snake-cv" width="${SIZE}" height="${SIZE}"></canvas>
+        <canvas id="snake-cv" width="${SIZE}" height="${SIZE}" role="img" aria-label="Juego Snake: usá flechas o WASD para mover, R para reiniciar" tabindex="0"></canvas>
         <div class="crt-reflection"></div>
         <div id="snake-overlay" class="overlay"></div>
       </div>
       <div class="snake-touch">
-        <button data-d="left">◀</button>
-        <button data-d="up">▲</button>
-        <button data-d="down">▼</button>
-        <button data-d="right">▶</button>
+        <button data-d="left" aria-label="Mover izquierda">◀</button>
+        <button data-d="up" aria-label="Mover arriba">▲</button>
+        <button data-d="down" aria-label="Mover abajo">▼</button>
+        <button data-d="right" aria-label="Mover derecha">▶</button>
       </div>
       <p class="help">FLECHAS / WASD MOVER · R REINICIAR · ESC HUB</p>
     </div>`;
@@ -45,6 +45,7 @@ export function mountSnake(root) {
   }
 
   let snake, dir, nextDir, food, stars, score, best, timer, alive, started, parts, shake;
+  let paused = false;
 
   best = Number(localStorage.getItem(BEST_KEY) || 0);
   elBest.textContent = best;
@@ -93,6 +94,27 @@ export function mountSnake(root) {
   function start() {
     if (timer) clearInterval(timer);
     started = true;
+    paused = false;
+    hideOverlay();
+    timer = setInterval(tick, speed());
+  }
+
+  function pause() {
+    if (!started || !alive || paused) return;
+    paused = true;
+    clearInterval(timer);
+    timer = null;
+    overlay.style.display = "flex";
+    overlay.innerHTML = `<div><h3>PAUSA</h3><p>Pestaña oculta — juego pausado</p><button id="snake-res">SEGUIR</button></div>`;
+    overlay.querySelector("#snake-res").onclick = (e) => {
+      e.stopPropagation();
+      resume();
+    };
+  }
+
+  function resume() {
+    if (!paused) return;
+    paused = false;
     hideOverlay();
     timer = setInterval(tick, speed());
   }
@@ -251,6 +273,10 @@ export function mountSnake(root) {
   }
 
   function onTap(e) {
+    if (paused) {
+      resume();
+      return;
+    }
     if (overlay.style.display !== "none") return;
     if (!started || !alive) {
       reset();
@@ -259,6 +285,10 @@ export function mountSnake(root) {
   }
 
   window.addEventListener("keydown", onKey);
+  function onVis() {
+    if (document.hidden) pause();
+  }
+  document.addEventListener("visibilitychange", onVis);
   root.querySelector("#snake-fs").onclick = (e) => {
     e.stopPropagation();
     toggleFS();
@@ -284,6 +314,10 @@ export function mountSnake(root) {
   });
   cv.addEventListener("click", onTap);
   overlay.addEventListener("click", () => {
+    if (paused) {
+      resume();
+      return;
+    }
     if (!started || !alive) {
       reset();
       start();
@@ -320,5 +354,6 @@ export function mountSnake(root) {
   return () => {
     clearInterval(timer);
     window.removeEventListener("keydown", onKey);
+    document.removeEventListener("visibilitychange", onVis);
   };
 }
