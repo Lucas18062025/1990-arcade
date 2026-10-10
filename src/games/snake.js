@@ -1,6 +1,8 @@
-const SIZE = 400;
-const CELLS = 20;
-const CELL = SIZE / CELLS;
+const COLS = 40;
+const ROWS = 20;
+const CELL = 20;
+const W = COLS * CELL; // 800
+const H = ROWS * CELL; // 400
 const BEST_KEY = "arcade-best-snake";
 import { saveBest } from "../lib/scores.js";
 
@@ -17,9 +19,9 @@ export function mountSnake(root) {
           <span>BEST <b id="snake-best">0</b></span>
         </div>
       </div>
-      <div class="canvas-box power-on">
+      <div class="canvas-box power-on" style="--ar:2">
         <div class="crt-glow"></div>
-        <canvas id="snake-cv" width="${SIZE}" height="${SIZE}" role="img" aria-label="Juego Snake: usá flechas o WASD para mover, R para reiniciar" tabindex="0"></canvas>
+        <canvas id="snake-cv" width="${W}" height="${H}" role="img" aria-label="Juego Snake en tablero ancho: usá flechas o WASD para mover, R para reiniciar" tabindex="0"></canvas>
         <div class="crt-reflection"></div>
         <div id="snake-overlay" class="overlay"></div>
       </div>
@@ -52,9 +54,9 @@ export function mountSnake(root) {
 
   function reset() {
     snake = [
-      { x: 10, y: 10 },
-      { x: 9, y: 10 },
-      { x: 8, y: 10 },
+      { x: 20, y: 10 },
+      { x: 19, y: 10 },
+      { x: 18, y: 10 },
     ];
     dir = { x: 1, y: 0 };
     nextDir = { x: 1, y: 0 };
@@ -63,9 +65,9 @@ export function mountSnake(root) {
     started = false;
     parts = [];
     shake = 0;
-    stars = Array.from({ length: 60 }, () => ({
-      x: Math.random() * SIZE,
-      y: Math.random() * SIZE,
+    stars = Array.from({ length: 90 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
       v: 0.3 + Math.random() * 0.9,
     }));
     elScore.textContent = "0";
@@ -77,8 +79,8 @@ export function mountSnake(root) {
   function placeFood() {
     while (true) {
       const f = {
-        x: Math.floor(Math.random() * CELLS),
-        y: Math.floor(Math.random() * CELLS),
+        x: Math.floor(Math.random() * COLS),
+        y: Math.floor(Math.random() * ROWS),
       };
       if (!snake.some((s) => s.x === f.x && s.y === f.y)) {
         food = f;
@@ -135,15 +137,15 @@ export function mountSnake(root) {
     if (shake > 0) shake--;
     for (const st of stars) {
       st.y += st.v;
-      if (st.y > SIZE) {
+      if (st.y > H) {
         st.y = 0;
-        st.x = Math.random() * SIZE;
+        st.x = Math.random() * W;
       }
     }
     dir = nextDir;
     const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
 
-    if (head.x < 0 || head.y < 0 || head.x >= CELLS || head.y >= CELLS) return die();
+    if (head.x < 0 || head.y < 0 || head.x >= COLS || head.y >= ROWS) return die();
     if (snake.some((s) => s.x === head.x && s.y === head.y)) return die();
 
     snake.unshift(head);
@@ -178,16 +180,20 @@ export function mountSnake(root) {
     ctx.save();
     if (shake > 0) ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
     ctx.fillStyle = "#000000";
-    ctx.fillRect(-12, -12, SIZE + 24, SIZE + 24);
+    ctx.fillRect(-12, -12, W + 24, H + 24);
     ctx.fillStyle = "#3a3a5a";
     for (const st of stars) ctx.fillRect(st.x, st.y, 1, 1);
     ctx.strokeStyle = "#111122";
-    for (let i = 1; i < CELLS; i++) {
+    for (let i = 1; i < COLS; i++) {
       ctx.beginPath();
       ctx.moveTo(i * CELL, 0);
-      ctx.lineTo(i * CELL, SIZE);
+      ctx.lineTo(i * CELL, H);
+      ctx.stroke();
+    }
+    for (let i = 1; i < ROWS; i++) {
+      ctx.beginPath();
       ctx.moveTo(0, i * CELL);
-      ctx.lineTo(SIZE, i * CELL);
+      ctx.lineTo(W, i * CELL);
       ctx.stroke();
     }
     ctx.fillStyle = "#ff00e5";
