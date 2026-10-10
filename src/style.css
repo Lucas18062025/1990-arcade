@@ -218,7 +218,7 @@ body {
 
 /* ── Game Wrapper (HUD lives here — NO CRT) ── */
 .game-wrap {
-  max-width: min(96vw, 900px);
+  max-width: min(96vw, 1100px);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -302,10 +302,26 @@ button.btn-back {
 /* ── CRT Screen Container ────────────────── */
 .canvas-box {
   position: relative;
-  /* Lo más grande posible sin deformar: manda el alto en fullscreen */
-  width: min(96vw, 1100px, calc((100dvh - 220px) * var(--ar, 1)));
+  /* Lo más grande posible sin deformar: manda el alto en fullscreen.
+     En rutas de juego el header se compacta y el footer se oculta,
+     por eso la reserva baja de 220px a 170px. */
+  width: min(96vw, 1100px, calc((100dvh - 170px) * var(--ar, 1)));
   min-width: min(280px, 94vw);
   margin: 0 auto;
+}
+
+/* En rutas de juego (#games-grid con .game-wrap): header compacto sin
+   subtítulo y footer oculto para darle alto al canvas. Hub intacto. */
+body:has(#games-grid .game-wrap) header {
+  padding-top: 0.9rem;
+  padding-bottom: 0.4rem;
+}
+body:has(#games-grid .game-wrap) header .arcade-title {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+}
+body:has(#games-grid .game-wrap) header p,
+body:has(#games-grid .game-wrap) footer {
+  display: none;
 }
 
 /* The actual game canvas */

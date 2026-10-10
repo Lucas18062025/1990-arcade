@@ -63,6 +63,7 @@ export function mountTetris(root) {
   }
 
   let board, cur, score, lines, level, best, raf, alive, started, last, dropMs, parts, shake, flash;
+  let paused = false;
 
   best = Number(localStorage.getItem(BEST_KEY) || 0);
   elBest.textContent = best;
@@ -81,6 +82,7 @@ export function mountTetris(root) {
     flash = [];
     alive = true;
     started = false;
+    paused = false;
     dropMs = 500;
     elScore.textContent = "0";
     elLines.textContent = "0";
@@ -204,7 +206,12 @@ export function mountTetris(root) {
 
   function start() {
     started = true;
+    paused = false;
     hideOverlay();
+    runLoop();
+  }
+
+  function runLoop() {
     cancelAnimationFrame(raf);
     last = performance.now();
     const loop = (t) => {
@@ -224,6 +231,25 @@ export function mountTetris(root) {
       raf = requestAnimationFrame(loop);
     };
     loop(last);
+  }
+
+  function pause() {
+    if (!started || !alive || paused) return;
+    paused = true;
+    cancelAnimationFrame(raf);
+    overlay.style.display = "flex";
+    overlay.innerHTML = `<div><h3>PAUSA</h3><p>Pestaña oculta — juego pausado</p><button id="tet-res">SEGUIR</button></div>`;
+    overlay.querySelector("#tet-res").onclick = (e) => {
+      e.stopPropagation();
+      resume();
+    };
+  }
+
+  function resume() {
+    if (!paused) return;
+    paused = false;
+    hideOverlay();
+    runLoop();
   }
 
   function die() {
@@ -363,6 +389,10 @@ export function mountTetris(root) {
   }
 
   window.addEventListener("keydown", onKey);
+  function onVis() {
+    if (document.hidden) pause();
+  }
+  document.addEventListener("visibilitychange", onVis);
   root.querySelector("#tet-fs").onclick = (e) => {
     e.stopPropagation();
     toggleFS();
@@ -374,6 +404,10 @@ export function mountTetris(root) {
     };
   });
   overlay.addEventListener("click", () => {
+    if (paused) {
+      resume();
+      return;
+    }
     if (!started || !alive) {
       reset();
       start();
@@ -385,5 +419,6 @@ export function mountTetris(root) {
   return () => {
     cancelAnimationFrame(raf);
     window.removeEventListener("keydown", onKey);
+    document.removeEventListener("visibilitychange", onVis);
   };
 }

@@ -2,7 +2,7 @@
 
 Hub retro con 4 minijuegos jugables + ranking online. Jugá acá: **https://1990-arcade.pages.dev/**
 
-![1990 Arcade — hub con 4 juegos y ranking online](screenshot.png)
+![1990 Arcade — hub con 4 juegos y ranking online](public/shot-hub.png)
 
 ## Juegos
 
