@@ -1,0 +1,465 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════
+   1990 ARCADE — Retro CRT Aesthetic
+   CRT effect on game canvas ONLY, HUD stays clean
+   ═══════════════════════════════════════════════ */
+
+:root {
+  --bg: #000000;
+  --bg2: #0a0a0a;
+  --neon: #00f0ff;
+  --neon2: #ff00e5;
+  --accent: #faff00;
+  --text: #c8c8d0;
+  --muted: #5a5a73;
+  --green: #33ff33;
+  --scanline-alpha: 0.08;
+}
+
+/* Easter egg matrix mode (teclear 1990) */
+body.matrix {
+  --bg: #020a02;
+  --bg2: #061206;
+  --neon: #33ff33;
+  --neon2: #00cc66;
+  --accent: #ccff00;
+  --text: #c0e8c0;
+  --muted: #4a6a4a;
+}
+
+.egg-toast {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg2);
+  border: 2px solid var(--neon);
+  color: var(--neon);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  z-index: 9999;
+  box-shadow: 0 0 20px var(--neon);
+}
+
+/* ── Global ───────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+/* ── Arcade Title ─────────────────────────── */
+.arcade-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(1.2rem, 4vw, 2.4rem);
+  color: var(--neon);
+  text-shadow:
+    0 0 7px var(--neon),
+    0 0 20px var(--neon),
+    0 0 40px var(--neon2),
+    0 0 80px var(--neon2);
+  letter-spacing: 0.15em;
+  animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% { opacity: 1; text-shadow: 0 0 7px var(--neon), 0 0 20px var(--neon), 0 0 40px var(--neon2), 0 0 80px var(--neon2); }
+  50% { opacity: 0.92; text-shadow: 0 0 4px var(--neon), 0 0 12px var(--neon), 0 0 25px var(--neon2), 0 0 50px var(--neon2); }
+}
+
+/* ── Games Grid ───────────────────────────── */
+#games-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+#hub-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  #hub-cols {
+    grid-template-columns: 1fr 300px;
+  }
+  #hub-cols #games-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  #side-board {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+.game-card {
+  border: 2px solid var(--neon);
+  border-radius: 4px;
+  padding: 1.5rem;
+  background: var(--bg2);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle scanline on cards too */
+.game-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.game-card h2 {
+  font-family: "Press Start 2P", monospace;
+  font-size: 14px;
+  color: var(--neon);
+}
+
+.game-card p {
+  font-size: 8px;
+}
+
+.game-card:hover {
+  transform: scale(1.03);
+  box-shadow:
+    0 0 15px var(--neon),
+    0 0 30px rgba(0, 240, 255, 0.3),
+    inset 0 0 15px rgba(0, 240, 255, 0.05);
+}
+
+.game-card.locked {
+  border-color: var(--muted);
+  opacity: 0.5;
+}
+
+.game-card.locked h2 {
+  color: var(--muted);
+}
+
+.portal-btn {
+  background: var(--neon);
+  color: #0a0a1a;
+  font-weight: bold;
+  border-radius: 999px;
+  padding: 0.6rem 1.4rem;
+  cursor: pointer;
+}
+
+.portal-btn[disabled] {
+  background: var(--muted);
+  cursor: default;
+}
+
+.board-card {
+  border-style: dashed;
+}
+
+.board-card input {
+  background: #000;
+  border: 1px solid var(--neon);
+  color: var(--accent);
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+  font: inherit;
+  width: 9rem;
+  margin-left: 0.4rem;
+}
+
+#top-list div {
+  padding: 0.15rem 0;
+}
+
+/* ── Game Wrapper (HUD lives here — NO CRT) ── */
+.game-wrap {
+  max-width: min(96vw, 900px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.game-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-left {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button.btn-back {
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.canvas-box:fullscreen {
+  background: #0a0a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0;
+}
+
+.canvas-box:fullscreen canvas {
+  width: auto;
+  height: 100vh;
+  max-width: 100vw;
+}
+
+.btn-back {
+  border: 1px solid var(--neon);
+  border-radius: 2px;
+  padding: 0.4rem 0.8rem;
+  font-size: 8px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: "Press Start 2P", monospace;
+  transition: box-shadow 150ms ease, color 150ms ease;
+}
+
+.btn-back:hover {
+  box-shadow: 0 0 10px var(--neon);
+  color: var(--neon);
+}
+
+.hud {
+  display: flex;
+  gap: 1.2rem;
+  font-size: 10px;
+  font-family: "Press Start 2P", monospace;
+}
+
+.hud b {
+  color: var(--accent);
+  margin-left: 0.3rem;
+}
+
+/* ── CRT Screen Container ────────────────── */
+.canvas-box {
+  position: relative;
+  /* Lo más grande posible sin deformar: manda el alto en fullscreen */
+  width: min(96vw, 1100px, calc((100dvh - 220px) * var(--ar, 1)));
+  min-width: min(280px, 94vw);
+  margin: 0 auto;
+}
+
+/* The actual game canvas */
+.canvas-box canvas {
+  width: 100%;
+  border: 3px solid #222;
+  border-radius: 6px;
+  background: #000;
+  display: block;
+  image-rendering: pixelated;
+  /* Slight CRT barrel distortion illusion */
+  box-shadow:
+    inset 0 0 60px rgba(0, 240, 255, 0.04),
+    0 0 12px rgba(0, 0, 0, 0.8);
+}
+
+/* ── CRT Scanlines (over canvas only) ─────── */
+.canvas-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 0, 0, var(--scanline-alpha)) 1px,
+    rgba(0, 0, 0, var(--scanline-alpha)) 2px
+  );
+  pointer-events: none;
+  z-index: 2;
+  animation: scanlineFlicker 0.1s steps(2) infinite;
+}
+
+/* ── CRT Vignette (over canvas only) ──────── */
+.canvas-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.45) 85%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ── CRT Phosphor Glow ────────────────────── */
+.crt-glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 10px;
+  box-shadow:
+    0 0 20px rgba(0, 240, 255, 0.08),
+    0 0 60px rgba(0, 240, 255, 0.04);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── CRT Screen Reflection ────────────────── */
+.crt-reflection {
+  position: absolute;
+  top: 6%;
+  left: 8%;
+  width: 35%;
+  height: 12%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ── CRT Flicker Animation ────────────────── */
+@keyframes scanlineFlicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 1; }
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 1; }
+  5% { opacity: 0.97; }
+  10% { opacity: 1; }
+  15% { opacity: 0.985; }
+  20% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.96; }
+  94% { opacity: 1; }
+}
+
+/* Apply subtle flicker to the whole canvas-box */
+.canvas-box {
+  animation: crtFlicker 4s linear infinite;
+}
+
+/* ── Overlay (start / game-over screens) ──── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.88);
+  border-radius: 6px;
+  text-align: center;
+  z-index: 10;
+}
+
+.overlay h3 {
+  font-family: "Press Start 2P", monospace;
+  font-size: 18px;
+  color: var(--neon);
+  text-shadow: 0 0 8px var(--neon), 0 0 20px var(--neon2);
+  margin-bottom: 1rem;
+}
+
+.overlay p {
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--text);
+  line-height: 2;
+}
+
+.overlay button {
+  margin-top: 1.2rem;
+  background: transparent;
+  border: 2px solid var(--neon);
+  color: var(--neon);
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 2px;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 150ms ease;
+}
+
+.overlay button:hover {
+  background: var(--neon);
+  color: #000;
+  box-shadow: 0 0 15px var(--neon), 0 0 30px rgba(0, 240, 255, 0.4);
+}
+
+/* ── Help text ────────────────────────────── */
+.help {
+  text-align: center;
+  font-size: 7px;
+  font-family: "Press Start 2P", monospace;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* ── Footer ───────────────────────────────── */
+footer p {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  letter-spacing: 0.05em;
+}
+
+/* ── CRT Power-On Animation ───────────────── */
+@keyframes crtPowerOn {
+  0% {
+    filter: brightness(30);
+    transform: scaleY(0.005) scaleX(0.2);
+  }
+  20% {
+    filter: brightness(5);
+    transform: scaleY(0.005) scaleX(1);
+  }
+  40% {
+    filter: brightness(2);
+    transform: scaleY(1) scaleX(1);
+  }
+  70% {
+    filter: brightness(1.2);
+  }
+  100% {
+    filter: brightness(1);
+    transform: scaleY(1) scaleX(1);
+  }
+}
+
+.canvas-box.power-on {
+  animation: crtPowerOn 0.6s ease-out forwards, crtFlicker 4s linear 0.6s infinite;
+}
