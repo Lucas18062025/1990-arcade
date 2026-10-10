@@ -45,6 +45,7 @@ export function mountInvaders(root) {
   }
 
   let player, bullets, ebullets, enemies, stars, score, lives, best, raf, alive, started, moveL, moveR, edir, etick, wave, shake;
+  let paused = false;
 
   best = Number(localStorage.getItem(BEST_KEY) || 0);
   elBest.textContent = best;
@@ -86,6 +87,7 @@ export function mountInvaders(root) {
     shake = 0;
     alive = true;
     started = false;
+    paused = false;
     moveL = moveR = false;
     elScore.textContent = "0";
     elLives.textContent = "3";
@@ -96,7 +98,12 @@ export function mountInvaders(root) {
 
   function start() {
     started = true;
+    paused = false;
     hideOverlay();
+    runLoop();
+  }
+
+  function runLoop() {
     cancelAnimationFrame(raf);
     let last = performance.now();
     let eAcc = 0;
@@ -113,6 +120,25 @@ export function mountInvaders(root) {
       raf = requestAnimationFrame(loop);
     };
     loop(last);
+  }
+
+  function pause() {
+    if (!started || !alive || paused) return;
+    paused = true;
+    cancelAnimationFrame(raf);
+    overlay.style.display = "flex";
+    overlay.innerHTML = `<div><h3>PAUSA</h3><p>Pestaña oculta — juego pausado</p><button id="inv-res">SEGUIR</button></div>`;
+    overlay.querySelector("#inv-res").onclick = (e) => {
+      e.stopPropagation();
+      resume();
+    };
+  }
+
+  function resume() {
+    if (!paused) return;
+    paused = false;
+    hideOverlay();
+    runLoop();
   }
 
   function addScore(n) {
@@ -344,6 +370,10 @@ export function mountInvaders(root) {
 
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("keyup", onKeyUp);
+  function onVis() {
+    if (document.hidden) pause();
+  }
+  document.addEventListener("visibilitychange", onVis);
   root.querySelector("#inv-fs").onclick = (e) => {
     e.stopPropagation();
     toggleFS();
@@ -378,12 +408,20 @@ export function mountInvaders(root) {
     e.preventDefault();
   }, { passive: false });
   cv.addEventListener("click", () => {
+    if (paused) {
+      resume();
+      return;
+    }
     if (!started || !alive) {
       reset();
       start();
     } else shoot();
   });
   overlay.addEventListener("click", () => {
+    if (paused) {
+      resume();
+      return;
+    }
     if (!started || !alive) {
       reset();
       start();
@@ -396,5 +434,6 @@ export function mountInvaders(root) {
     cancelAnimationFrame(raf);
     window.removeEventListener("keydown", onKeyDown);
     window.removeEventListener("keyup", onKeyUp);
+    document.removeEventListener("visibilitychange", onVis);
   };
 }

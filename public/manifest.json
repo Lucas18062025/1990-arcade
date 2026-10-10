@@ -19,7 +19,7 @@
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
   "screenshots": [
-    { "src": "/shot-hub.png", "sizes": "1070x503", "type": "image/png", "form_factor": "wide" }
+    { "src": "/shot-hub.png", "sizes": "862x321", "type": "image/png", "form_factor": "wide" }
   ],
   "shortcuts": [
     { "name": "Snake", "url": "/#/snake", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },

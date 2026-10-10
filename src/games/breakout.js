@@ -38,6 +38,7 @@ export function mountBreakout(root) {
   }
 
   let paddle, ball, bricks, parts, shake, stars, score, best, raf, alive, started, moveL, moveR;
+  let paused = false;
 
   best = Number(localStorage.getItem(BEST_KEY) || 0);
   elBest.textContent = best;
@@ -76,6 +77,7 @@ export function mountBreakout(root) {
     }));
     alive = true;
     started = false;
+    paused = false;
     moveL = moveR = false;
     elScore.textContent = "0";
     draw();
@@ -84,7 +86,12 @@ export function mountBreakout(root) {
 
   function start() {
     started = true;
+    paused = false;
     hideOverlay();
+    runLoop();
+  }
+
+  function runLoop() {
     cancelAnimationFrame(raf);
     let last = performance.now();
     const loop = (t) => {
@@ -96,6 +103,25 @@ export function mountBreakout(root) {
       raf = requestAnimationFrame(loop);
     };
     loop(last);
+  }
+
+  function pause() {
+    if (!started || !alive || paused) return;
+    paused = true;
+    cancelAnimationFrame(raf);
+    overlay.style.display = "flex";
+    overlay.innerHTML = `<div><h3>PAUSA</h3><p>Pestaña oculta — juego pausado</p><button id="brk-res">SEGUIR</button></div>`;
+    overlay.querySelector("#brk-res").onclick = (e) => {
+      e.stopPropagation();
+      resume();
+    };
+  }
+
+  function resume() {
+    if (!paused) return;
+    paused = false;
+    hideOverlay();
+    runLoop();
   }
 
   function burst(x, y, color) {
@@ -291,6 +317,10 @@ export function mountBreakout(root) {
 
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("keyup", onKeyUp);
+  function onVis() {
+    if (document.hidden) pause();
+  }
+  document.addEventListener("visibilitychange", onVis);
   root.querySelector("#brk-fs").onclick = (e) => {
     e.stopPropagation();
     toggleFS();
@@ -299,6 +329,10 @@ export function mountBreakout(root) {
   cv.addEventListener("touchmove", onTouch, { passive: false });
   cv.addEventListener("touchstart", onTouch, { passive: false });
   overlay.addEventListener("click", () => {
+    if (paused) {
+      resume();
+      return;
+    }
     if (!started || !alive) {
       reset();
       start();
@@ -311,5 +345,6 @@ export function mountBreakout(root) {
     cancelAnimationFrame(raf);
     window.removeEventListener("keydown", onKeyDown);
     window.removeEventListener("keyup", onKeyUp);
+    document.removeEventListener("visibilitychange", onVis);
   };
 }
