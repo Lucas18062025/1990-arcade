@@ -1,7 +1,7 @@
-const COLS = 14;
+const COLS = 20;
 const ROWS = 20;
 const CELL = 20;
-const W = COLS * CELL; // 280
+const W = COLS * CELL; // 400
 const H = ROWS * CELL; // 400
 const BEST_KEY = "arcade-best-tetris";
 import { saveBest } from "../lib/scores.js";
@@ -31,7 +31,7 @@ export function mountTetris(root) {
           <span>BEST <b id="tet-best">0</b></span>
         </div>
       </div>
-      <div class="canvas-box" style="--ar:.7">
+      <div class="canvas-box">
         <canvas id="tet-cv" width="${W}" height="${H}" role="img" aria-label="Juego Tetris: mové con flechas, rotá con arriba, espacio para caída" tabindex="0"></canvas>
         <div id="tet-overlay" class="overlay"></div>
       </div>
