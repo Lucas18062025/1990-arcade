@@ -312,11 +312,25 @@ canvas:focus-visible {
 .canvas-box {
   position: relative;
   /* Lo más grande posible sin deformar: manda el alto en fullscreen.
-     En rutas de juego el header se compacta y el footer se oculta,
-     por eso la reserva baja de 220px a 170px. */
-  width: min(96vw, 1100px, calc((100dvh - 170px) * var(--ar, 1)));
+     Reserva base 210px (header compacto + HUD + touch + ayuda) para que en
+     móvil no haya scroll. En desktop con mouse los botones touch se ocultan
+     y la reserva baja a 120px (ver media query abajo). */
+  width: min(96vw, 1100px, calc((100dvh - 210px) * var(--ar, 1)));
   min-width: min(280px, 94vw);
   margin: 0 auto;
+}
+
+/* Desktop con puntero fino: los botones touch sobran (hay teclado), se
+   ocultan y el canvas crece con reserva menor. En táctil siguen visibles. */
+@media (hover: hover) and (pointer: fine) {
+  .canvas-box {
+    width: min(96vw, 1100px, calc((100dvh - 120px) * var(--ar, 1)));
+  }
+  .snake-touch,
+  .inv-touch,
+  .tet-touch {
+    display: none;
+  }
 }
 
 /* En rutas de juego (#games-grid con .game-wrap): header compacto sin
