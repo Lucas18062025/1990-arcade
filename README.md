@@ -4,6 +4,14 @@ Hub retro con 4 minijuegos jugables + ranking online. Jugá acá: **https://1990
 
 ![1990 Arcade — hub con 4 juegos y ranking online](public/shot-hub.png)
 
+| Snake 40x20 | Breakout |
+|-------------|----------|
+| ![Snake panorámico en juego](public/shots/snake.png) | ![Breakout rompiendo bloques](public/shots/breakout.png) |
+
+| Invaders | Tetris 20x20 |
+|----------|--------------|
+| ![Invaders oleada 1 disparando](public/shots/invaders.png) | ![Tetris pozo ancho](public/shots/tetris.png) |
+
 ## Juegos
 
 | Juego     | Objetivo                          | Controles                                              |
