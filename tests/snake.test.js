@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { getSnakeInitialState, moveSnake, checkCollision } from '../../src/games/snake/snake.js';
+import { getSnakeInitialState, moveSnake, checkCollision } from '../../src/games/snake/utils.js';
 
 /**
  * Tests de ejemplo para el juego Snake.
