@@ -7,9 +7,6 @@
     "build": "vite build",
     "preview": "vite preview --port 4173",
     "test": "vitest run"
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview --port 4173"
   },
   "devDependencies": {
     "vitest": "^2.0.0",
