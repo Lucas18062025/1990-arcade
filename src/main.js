@@ -116,7 +116,7 @@ function renderHub() {
       (g) => `
     <div class="game-card ${g.locked ? "locked" : ""}${!g.locked && g.id === last ? " last-played" : ""}" data-id="${g.id}" style="--card:${g.accent || "var(--neon)"}">
       <p class="text-xs text-muted">GAME PORTAL</p>
-      ${!g.locked && g.id === last ? `<p class="last-tag">★ ÚLTIMO</p>` : ""}
+      ${!g.locked && g.id === last ? `<p class="last-tag">★ ÚLTIMO JUGADO</p>` : ""}
       <div class="card-head">${pixelIcon(g.icon)}<h2 class="text-xl font-bold mt-1">${g.name}</h2></div>
       <p class="text-muted mt-2 text-sm">Objetivo: ${g.desc}</p>
       ${g.controls ? `<p class="text-muted mt-1 text-xs">Controles: ${g.controls}</p>` : ""}
