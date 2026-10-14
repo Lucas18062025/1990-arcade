@@ -276,6 +276,21 @@ body {
   padding: 0.15rem 0;
 }
 
+.game-card.last-played {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 15px rgba(250, 255, 0, 0.35),
+    inset 0 0 15px rgba(250, 255, 0, 0.05);
+}
+
+.last-tag {
+  font-size: 8px;
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent);
+  margin-top: 0.4rem;
+  letter-spacing: 0.1em;
+}
+
 .best-line {
   font-size: 8px;
   color: var(--muted);

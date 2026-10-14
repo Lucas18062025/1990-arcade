@@ -52,6 +52,22 @@ function pixelIcon(kind) {
 let unmount = null;
 const grid = document.getElementById("games-grid");
 
+const LAST_KEY = "arcade-last";
+function setLast(id) {
+  try {
+    localStorage.setItem(LAST_KEY, id);
+  } catch {
+    /* noop */
+  }
+}
+function getLast() {
+  try {
+    return localStorage.getItem(LAST_KEY) || null;
+  } catch {
+    return null;
+  }
+}
+
 function renderHub() {
   if (unmount) {
     unmount();
@@ -64,16 +80,18 @@ function renderHub() {
       return 0;
     }
   };
+  const last = getLast();
   grid.innerHTML = games
     .map(
       (g) => `
-    <div class="game-card ${g.locked ? "locked" : ""}" data-id="${g.id}" style="--card:${g.accent || "var(--neon)"}">
+    <div class="game-card ${g.locked ? "locked" : ""}${!g.locked && g.id === last ? " last-played" : ""}" data-id="${g.id}" style="--card:${g.accent || "var(--neon)"}">
       <p class="text-xs text-muted">GAME PORTAL</p>
+      ${!g.locked && g.id === last ? `<p class="last-tag">★ ÚLTIMO</p>` : ""}
       <div class="card-head">${pixelIcon(g.icon)}<h2 class="text-xl font-bold mt-1">${g.name}</h2></div>
       <p class="text-muted mt-2 text-sm">Objetivo: ${g.desc}</p>
       ${g.controls ? `<p class="text-muted mt-1 text-xs">Controles: ${g.controls}</p>` : ""}
       <p class="best-line">BEST <b>${bestOf(g.id)}</b></p>
-      <button class="mt-4 text-sm portal-btn" ${g.locked ? "disabled" : ""}>${g.locked ? "🔒 Bloqueado" : "▶ Run"}</button>
+      <button class="mt-4 text-sm portal-btn" ${g.locked ? "disabled" : ""}>${g.locked ? "🔒 Bloqueado" : !g.locked && g.id === last ? "▶ Continuar" : "▶ Run"}</button>
     </div>`
     )
     .join("");
@@ -158,6 +176,7 @@ async function renderRoute() {
     grid.innerHTML = "";
     grid.appendChild(host);
     unmount = mountSnake(host);
+    setLast("snake");
     console.log("[arcade] snake mounted");
     return;
   }
@@ -168,6 +187,7 @@ async function renderRoute() {
     grid.innerHTML = "";
     grid.appendChild(host);
     unmount = mountBreakout(host);
+    setLast("breakout");
     console.log("[arcade] breakout mounted");
     return;
   }
@@ -178,6 +198,7 @@ async function renderRoute() {
     grid.innerHTML = "";
     grid.appendChild(host);
     unmount = mountInvaders(host);
+    setLast("invaders");
     console.log("[arcade] invaders mounted");
     return;
   }
@@ -188,6 +209,7 @@ async function renderRoute() {
     grid.innerHTML = "";
     grid.appendChild(host);
     unmount = mountTetris(host);
+    setLast("tetris");
     console.log("[arcade] tetris mounted");
     return;
   }
