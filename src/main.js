@@ -14,8 +14,34 @@ const games = [
 
 function pixelIcon(kind) {
   const s = 'shape-rendering="crispEdges"';
-  if (kind === "snake")
-    return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s}><rect x="1" y="0" width="3" height="2" fill="#33ff33"/><rect x="2" y="1" width="1" height="1" fill="#0a0a0a"/><rect x="4" y="1" width="2" height="1" fill="#ff2244"/><rect x="1" y="2" width="1" height="3" fill="#33ff33"/><rect x="1" y="5" width="5" height="1" fill="#33ff33"/><rect x="5" y="3" width="1" height="3" fill="#1fa81f"/><rect x="2" y="5" width="3" height="1" fill="#9dff9d"/><rect x="5" y="6" width="2" height="1" fill="#1fa81f"/></g></svg>`;
+  if (kind === "snake") {
+    const P = { G: "#33ff33", D: "#1fa81f", E: "#0a0a0a", W: "#ffffff", R: "#ff2244", N: "#8a5a2a" };
+    const MAP = [
+      "................",
+      "..GGG...........",
+      ".GGGGG.R........",
+      ".GEGGRRR........",
+      ".GGWWG.R........",
+      ".GGWW...........",
+      ".GG...GGGGGG....",
+      ".GG...G....G....",
+      ".GG...D....D....",
+      ".GGGGGGGGGGG....",
+      ".............N..",
+      "............RRR.",
+      "............WRR.",
+      "............RRD.",
+      "................",
+      "................",
+    ];
+    let r = "";
+    MAP.forEach((row, y) => {
+      [...row].forEach((c, x) => {
+        if (P[c]) r += `<rect x="${x}" y="${y}" width="1" height="1" fill="${P[c]}"/>`;
+      });
+    });
+    return `<svg class="pixel-icon" viewBox="0 0 16 16" aria-hidden="true"><g ${s}>${r}</g></svg>`;
+  }
   if (kind === "hammer")
     return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s}><rect x="0" y="0" width="4" height="2" fill="#c8c8d0"/><rect x="0" y="2" width="4" height="1" fill="#8a8aa3"/><rect x="3" y="2" width="1" height="4" fill="#a06a2a"/><rect x="4" y="3" width="1" height="4" fill="#a06a2a"/><rect x="2" y="6" width="4" height="1" fill="#5a3a12"/></g></svg>`;
   if (kind === "invader")
