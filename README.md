@@ -1,7 +1,7 @@
 # 1990 ARCADE
 
 ## Descripción
-Colección de mini‑juegos retro (Snake, Breakout, Invaders, Tetris) construidos con Vite, JavaScript vanilla y Tailwind CSS.
+Colección de mini‑juegos retro (Snake, Breakout, Invaders, Tetris, Pac-Man) construidos con Vite, JavaScript vanilla y Tailwind CSS.
 
 ## Desarrollo
 ```bash
