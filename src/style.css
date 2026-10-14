@@ -51,6 +51,11 @@ body.matrix {
 
 body {
   background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 50% -10%, rgba(0, 240, 255, 0.08), transparent 55%),
+    linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+  background-size: auto, 32px 32px, 32px 32px;
   color: var(--text);
   font-family: "Press Start 2P", monospace;
   font-size: 10px;
@@ -81,6 +86,20 @@ body {
   50% { opacity: 0.92; text-shadow: 0 0 4px var(--neon), 0 0 12px var(--neon), 0 0 25px var(--neon2), 0 0 50px var(--neon2); }
 }
 
+.insert-coin {
+  margin-top: 0.8rem;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent);
+  animation: coinBlink 1.2s steps(2) infinite;
+}
+
+@keyframes coinBlink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.15; }
+}
+
 /* ── Games Grid ───────────────────────────── */
 #games-grid {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -107,13 +126,32 @@ body {
 }
 
 .game-card {
-  border: 2px solid var(--neon);
+  border: 2px solid var(--card, var(--neon));
   border-radius: 4px;
   padding: 1.5rem;
   background: var(--bg2);
   transition: transform 150ms ease, box-shadow 150ms ease;
   position: relative;
   overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.card-head h2 {
+  margin: 0;
+}
+
+.pixel-icon {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  image-rendering: pixelated;
 }
 
 /* Subtle scanline on cards too */
@@ -143,11 +181,20 @@ body {
 }
 
 .game-card:hover {
-  transform: scale(1.03);
+  transform: scale(1.03) translateY(-2px);
   box-shadow:
-    0 0 15px var(--neon),
+    0 0 15px var(--card, var(--neon)),
     0 0 30px rgba(0, 240, 255, 0.3),
     inset 0 0 15px rgba(0, 240, 255, 0.05);
+}
+
+.game-card:hover .pixel-icon {
+  animation: iconBounce 0.5s steps(2) infinite;
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 
 .game-card.locked {
@@ -160,12 +207,25 @@ body {
 }
 
 .portal-btn {
-  background: var(--neon);
-  color: #0a0a1a;
+  background: var(--accent);
+  color: #0a0a0a;
   font-weight: bold;
+  border: 2px solid #0a0a0a;
   border-radius: 999px;
   padding: 0.6rem 1.4rem;
   cursor: pointer;
+  box-shadow: 4px 4px 0 #000, 0 0 12px rgba(250, 255, 0, 0.35);
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+
+.portal-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #000, 0 0 16px var(--card, var(--neon));
+}
+
+.portal-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
 }
 
 .portal-btn[disabled] {
@@ -215,6 +275,21 @@ body {
 #top-list div {
   padding: 0.15rem 0;
 }
+
+.rank-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  line-height: 1.8;
+}
+
+.rank-row .medal {
+  color: var(--muted);
+}
+
+.rank-row.medal-1 .medal { color: #faff00; text-shadow: 0 0 8px #faff00; }
+.rank-row.medal-2 .medal { color: #c8c8d0; text-shadow: 0 0 8px #c8c8d0; }
+.rank-row.medal-3 .medal { color: #ff9a3c; text-shadow: 0 0 8px #ff9a3c; }
 
 /* ── Game Wrapper (HUD lives here — NO CRT) ── */
 .game-wrap {
@@ -266,8 +341,13 @@ button.btn-back {
 @media (prefers-reduced-motion: reduce) {
   .arcade-title,
   .canvas-box,
-  .canvas-box::before {
+  .canvas-box::before,
+  .pixel-icon,
+  .insert-coin {
     animation: none;
+  }
+  .game-card:hover {
+    transform: none;
   }
 }
 
