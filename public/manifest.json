@@ -1,7 +1,7 @@
 {
   "name": "1990 Arcade",
   "short_name": "1990 Arcade",
-  "description": "Hub retro con Snake, Breakout, Invaders y Tetris + ranking online.",
+  "description": "Hub retro con Snake, Breakout, Invaders, Tetris y Pac-Man + ranking online.",
   "id": "/",
   "start_url": "/",
   "scope": "/",

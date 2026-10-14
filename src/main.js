@@ -3,6 +3,7 @@ import { mountSnake } from "./games/snake.js";
 import { mountBreakout } from "./games/breakout.js";
 import { mountInvaders } from "./games/invaders.js";
 import { mountTetris } from "./games/tetris.js";
+import { mountPacman } from "./games/pacman.js";
 import { topScores, playerName, setPlayerName } from "./lib/scores.js";
 
 const games = [
@@ -10,6 +11,7 @@ const games = [
   { id: "breakout", name: "Breakout", desc: "Rompé todos los bloques.", controls: "← → / mouse / touch", locked: false, accent: "#ff00e5", icon: "hammer" },
   { id: "invaders", name: "Invaders", desc: "Sobreviví 3 vidas por oleadas.", controls: "← → mover · Espacio disparar", locked: false, accent: "#b366ff", icon: "invader" },
   { id: "tetris", name: "Tetris", desc: "Encastrá piezas y limpiá líneas.", controls: "← → ↓ mover · ↑ rotar · Espacio caer", locked: false, accent: "#faff00", icon: "block" },
+  { id: "pacman", name: "Pac-Man", desc: "Comé todos los puntos sin que te atrapen.", controls: "Flechas / WASD", locked: false, accent: "#faff00", icon: "pacman" },
 ];
 
 function pixelIcon(kind) {
@@ -46,6 +48,8 @@ function pixelIcon(kind) {
     return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s}><rect x="0" y="0" width="4" height="2" fill="#c8c8d0"/><rect x="0" y="2" width="4" height="1" fill="#8a8aa3"/><rect x="3" y="2" width="1" height="4" fill="#a06a2a"/><rect x="4" y="3" width="1" height="4" fill="#a06a2a"/><rect x="2" y="6" width="4" height="1" fill="#5a3a12"/></g></svg>`;
   if (kind === "invader")
     return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s} fill="#b366ff"><rect x="2" y="0" width="1" height="1"/><rect x="5" y="0" width="1" height="1"/><rect x="3" y="1" width="2" height="1"/><rect x="1" y="2" width="6" height="1"/><rect x="0" y="3" width="8" height="1"/><rect x="0" y="4" width="2" height="1"/><rect x="3" y="4" width="2" height="1"/><rect x="6" y="4" width="2" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="5" y="6" width="1" height="1"/></g></svg>`;
+  if (kind === "pacman")
+    return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s}><rect x="2" y="0" width="4" height="1" fill="#faff00"/><rect x="1" y="1" width="6" height="1" fill="#faff00"/><rect x="0" y="2" width="5" height="1" fill="#faff00"/><rect x="0" y="3" width="4" height="1" fill="#faff00"/><rect x="0" y="4" width="4" height="1" fill="#faff00"/><rect x="0" y="5" width="5" height="1" fill="#faff00"/><rect x="1" y="6" width="6" height="1" fill="#faff00"/><rect x="2" y="7" width="4" height="1" fill="#faff00"/><rect x="2" y="2" width="1" height="1" fill="#0a0a0a"/></g></svg>`;
   return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s}><rect x="2" y="1" width="4" height="1" fill="#faff00"/><rect x="3" y="2" width="2" height="1" fill="#faff00"/><rect x="3" y="3" width="2" height="1" fill="#c8a800"/><rect x="0" y="5" width="2" height="2" fill="#00f0ff"/><rect x="6" y="5" width="2" height="2" fill="#ff00e5"/></g></svg>`;
 }
 
@@ -178,7 +182,7 @@ function renderHub() {
     };
   }
   if (board) {
-    const FILTERS = ["all", "snake", "breakout", "invaders", "tetris"];
+    const FILTERS = ["all", "snake", "breakout", "invaders", "tetris", "pacman"];
     let filter = "all";
     const esc = (s) =>
       String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -268,17 +272,28 @@ async function renderRoute() {
     console.log("[arcade] tetris mounted");
     return;
   }
+  if (id === "pacman") {
+    if (unmount) unmount();
+    const host = document.createElement("div");
+    host.className = "w-full";
+    grid.innerHTML = "";
+    grid.appendChild(host);
+    unmount = mountPacman(host);
+    setLast("pacman");
+    console.log("[arcade] pacman mounted");
+    return;
+  }
   renderHub();
 }
 
 window.addEventListener("hashchange", renderRoute);
 renderRoute();
 
-// Atajos 1-4 para lanzar juegos desde el hub
+// Atajos 1-5 para lanzar juegos desde el hub
 window.addEventListener("keydown", (e) => {
   const hash = location.hash || "#/";
   if (hash !== "#/" && hash !== "") return;
-  if (/^[1-4]$/.test(e.key)) {
+  if (/^[1-5]$/.test(e.key)) {
     const g = games[Number(e.key) - 1];
     if (g && !g.locked) location.hash = "#/" + g.id;
   }
