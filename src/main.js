@@ -8,10 +8,10 @@ import { topScores, playerName, setPlayerName } from "./lib/scores.js";
 
 const games = [
   { id: "snake", name: "Snake", desc: "Comé y crecé sin chocar.", controls: "Flechas / WASD", locked: false, accent: "#33ff33", icon: "snake" },
-  { id: "breakout", name: "Breakout", desc: "Rompé todos los bloques.", controls: "← → / mouse / touch", locked: false, accent: "#ff00e5", icon: "hammer" },
+  { id: "pacman", name: "Pac-Man", desc: "Comé todos los puntos sin que te atrapen.", controls: "Flechas / WASD", locked: false, accent: "#faff00", icon: "pacman" },
   { id: "invaders", name: "Invaders", desc: "Sobreviví 3 vidas por oleadas.", controls: "← → mover · Espacio disparar", locked: false, accent: "#b366ff", icon: "invader" },
   { id: "tetris", name: "Tetris", desc: "Encastrá piezas y limpiá líneas.", controls: "← → ↓ mover · ↑ rotar · Espacio caer", locked: false, accent: "#faff00", icon: "block" },
-  { id: "pacman", name: "Pac-Man", desc: "Comé todos los puntos sin que te atrapen.", controls: "Flechas / WASD", locked: false, accent: "#faff00", icon: "pacman" },
+  { id: "breakout", name: "Breakout", desc: "Rompé todos los bloques.", controls: "← → / mouse / touch", locked: false, accent: "#ff00e5", icon: "hammer" },
 ];
 
 function pixelIcon(kind) {
