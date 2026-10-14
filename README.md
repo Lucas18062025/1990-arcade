@@ -30,13 +30,17 @@ Colección de mini‑juegos retro (Snake, Pac-Man, Invaders, Tetris, Breakout) c
 
 ## Galería
 
-| Snake | Invaders |
+| Snake | Pac-Man |
 |---|---|
-| ![Snake](public/shots/snake.png) | ![Invaders](public/shots/invaders.png) |
+| ![Snake](public/shots/snake.png) | ![Pac-Man](public/shots/pacman.png) |
 
-| Tetris | Breakout |
+| Invaders | Tetris |
 |---|---|
-| ![Tetris](public/shots/tetris.png) | ![Breakout](public/shots/breakout.png) |
+| ![Invaders](public/shots/invaders.png) | ![Tetris](public/shots/tetris.png) |
+
+| Breakout |
+|---|
+| ![Breakout](public/shots/breakout.png) |
 
 ## Desarrollo
 ```bash
