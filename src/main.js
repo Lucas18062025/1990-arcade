@@ -6,7 +6,7 @@ import { mountTetris } from "./games/tetris.js";
 import { topScores, playerName, setPlayerName } from "./lib/scores.js";
 
 const games = [
-  { id: "snake", name: "Snake", desc: "Comé y crecé sin chocar.", controls: "Flechas / WASD", locked: false, accent: "#33ff33", icon: "shroom" },
+  { id: "snake", name: "Snake", desc: "Comé y crecé sin chocar.", controls: "Flechas / WASD", locked: false, accent: "#33ff33", icon: "snake" },
   { id: "breakout", name: "Breakout", desc: "Rompé todos los bloques.", controls: "← → / mouse / touch", locked: false, accent: "#ff00e5", icon: "hammer" },
   { id: "invaders", name: "Invaders", desc: "Sobreviví 3 vidas por oleadas.", controls: "← → mover · Espacio disparar", locked: false, accent: "#b366ff", icon: "invader" },
   { id: "tetris", name: "Tetris", desc: "Encastrá piezas y limpiá líneas.", controls: "← → ↓ mover · ↑ rotar · Espacio caer", locked: false, accent: "#faff00", icon: "block" },
@@ -14,8 +14,8 @@ const games = [
 
 function pixelIcon(kind) {
   const s = 'shape-rendering="crispEdges"';
-  if (kind === "shroom")
-    return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s}><rect x="2" y="0" width="4" height="1" fill="#ff2244"/><rect x="1" y="1" width="6" height="2" fill="#ff2244"/><rect x="2" y="1" width="1" height="1" fill="#fff"/><rect x="5" y="1" width="1" height="1" fill="#fff"/><rect x="3" y="2" width="2" height="1" fill="#fff"/><rect x="1" y="3" width="6" height="1" fill="#ff2244"/><rect x="3" y="4" width="2" height="2" fill="#e8d8b0"/><rect x="2" y="6" width="4" height="1" fill="#e8d8b0"/><rect x="3" y="4" width="1" height="1" fill="#000"/></g></svg>`;
+  if (kind === "snake")
+    return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s}><rect x="1" y="0" width="3" height="2" fill="#33ff33"/><rect x="2" y="1" width="1" height="1" fill="#0a0a0a"/><rect x="4" y="1" width="2" height="1" fill="#ff2244"/><rect x="1" y="2" width="1" height="3" fill="#33ff33"/><rect x="1" y="5" width="5" height="1" fill="#33ff33"/><rect x="5" y="3" width="1" height="3" fill="#1fa81f"/><rect x="2" y="5" width="3" height="1" fill="#9dff9d"/><rect x="5" y="6" width="2" height="1" fill="#1fa81f"/></g></svg>`;
   if (kind === "hammer")
     return `<svg class="pixel-icon" viewBox="0 0 8 8" aria-hidden="true"><g ${s}><rect x="0" y="0" width="4" height="2" fill="#c8c8d0"/><rect x="0" y="2" width="4" height="1" fill="#8a8aa3"/><rect x="3" y="2" width="1" height="4" fill="#a06a2a"/><rect x="4" y="3" width="1" height="4" fill="#a06a2a"/><rect x="2" y="6" width="4" height="1" fill="#5a3a12"/></g></svg>`;
   if (kind === "invader")
