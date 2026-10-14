@@ -68,6 +68,36 @@ function getLast() {
   }
 }
 
+// Blips arcade con Web Audio, sin assets. Default encendido bajo, apaga con toggle.
+const SND_KEY = "arcade-sound";
+let sndOn = true;
+try {
+  sndOn = localStorage.getItem(SND_KEY) !== "off";
+} catch {
+  sndOn = true;
+}
+let actx = null;
+function beep(freq = 660, dur = 0.05) {
+  if (!sndOn) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    actx = actx || new AC();
+    if (actx.state === "suspended") actx.resume().catch(() => {});
+    const o = actx.createOscillator();
+    const g = actx.createGain();
+    o.type = "square";
+    o.frequency.value = freq;
+    g.gain.value = 0.03;
+    o.connect(g);
+    g.connect(actx.destination);
+    o.start();
+    o.stop(actx.currentTime + dur);
+  } catch {
+    /* noop */
+  }
+}
+
 function renderHub() {
   if (unmount) {
     unmount();
@@ -108,6 +138,31 @@ function renderHub() {
         location.hash = "#/" + id;
       };
     }
+  });
+
+  // toggle de sonido persistido + blips en botones del hub
+  const sndBtn = document.getElementById("snd-toggle");
+  if (sndBtn) {
+    const paint = () => {
+      sndBtn.textContent = sndOn ? "🔊" : "🔇";
+      sndBtn.setAttribute("aria-pressed", String(sndOn));
+    };
+    paint();
+    sndBtn.onclick = (e) => {
+      e.stopPropagation();
+      sndOn = !sndOn;
+      try {
+        localStorage.setItem(SND_KEY, sndOn ? "on" : "off");
+      } catch {
+        /* noop */
+      }
+      paint();
+      if (sndOn) beep(880, 0.06);
+    };
+  }
+  grid.querySelectorAll(".portal-btn").forEach((b) => {
+    b.addEventListener("mouseenter", () => beep(660, 0.04));
+    b.addEventListener("click", () => beep(880, 0.06));
   });
 
   // ranking online + nombre de jugador
