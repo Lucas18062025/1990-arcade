@@ -57,6 +57,13 @@ function renderHub() {
     unmount();
     unmount = null;
   }
+  const bestOf = (id) => {
+    try {
+      return Number(localStorage.getItem("arcade-best-" + id) || 0) || 0;
+    } catch {
+      return 0;
+    }
+  };
   grid.innerHTML = games
     .map(
       (g) => `
@@ -65,6 +72,7 @@ function renderHub() {
       <div class="card-head">${pixelIcon(g.icon)}<h2 class="text-xl font-bold mt-1">${g.name}</h2></div>
       <p class="text-muted mt-2 text-sm">Objetivo: ${g.desc}</p>
       ${g.controls ? `<p class="text-muted mt-1 text-xs">Controles: ${g.controls}</p>` : ""}
+      <p class="best-line">BEST <b>${bestOf(g.id)}</b></p>
       <button class="mt-4 text-sm portal-btn" ${g.locked ? "disabled" : ""}>${g.locked ? "🔒 Bloqueado" : "▶ Run"}</button>
     </div>`
     )

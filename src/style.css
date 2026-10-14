@@ -276,6 +276,17 @@ body {
   padding: 0.15rem 0;
 }
 
+.best-line {
+  font-size: 8px;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+.best-line b {
+  color: var(--accent);
+  margin-left: 0.3rem;
+}
+
 .rank-row {
   display: flex;
   gap: 0.5rem;
