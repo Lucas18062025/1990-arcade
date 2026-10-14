@@ -1,51 +1,25 @@
 # 1990 ARCADE
 
-Hub retro con 4 minijuegos jugables + ranking online. Jugá acá: **https://1990-arcade.pages.dev/**
+## Descripción
+Colección de mini‑juegos retro (Snake, Breakout, Invaders, Tetris) construidos con Vite, JavaScript vanilla y Tailwind CSS.
 
-![1990 Arcade — hub con 4 juegos y ranking online](public/shot-hub.png)
-
-| Snake 40x20 | Breakout |
-|-------------|----------|
-| ![Snake panorámico en juego](public/shots/snake.png) | ![Breakout rompiendo bloques](public/shots/breakout.png) |
-
-| Invaders | Tetris 20x20 |
-|----------|--------------|
-| ![Invaders oleada 1 disparando](public/shots/invaders.png) | ![Tetris pozo ancho](public/shots/tetris.png) |
-
-## Juegos
-
-| Juego     | Objetivo                          | Controles                                              |
-|-----------|-----------------------------------|--------------------------------------------------------|
-| Snake     | Comé y crecé sin chocar           | Flechas / WASD · touch swipe                           |
-| Breakout  | Rompé todos los bloques           | ← → / A D · mouse / touch                              |
-| Invaders  | Sobreviví 3 vidas por oleadas     | ← → mover · Espacio disparar                           |
-| Tetris    | Encastrá piezas y limpiá líneas   | ← → ↓ mover · ↑ rotar · Espacio caída dura             |
-
-Comunes: `R` reinicia · `Esc` vuelve al hub · `⛶` pantalla completa.
-Alias gabinete: `X/V/C` acción · `Z/H` volver.
-Easter egg: tecleá `1990` para modo matrix.
-
-## Ranking online
-
-Los récords se guardan en Cloud Firestore (`scores`: `{game, name, score, at}`) y el hub muestra el TOP 5. Reglas: lectura pública, solo creación validada (score numérico 0–999999, nombre ≤ 12), sin update/delete. El nombre se escapa al renderizar (XSS).
-
-## Stack
-
-Vite 6 + JS vanilla + Tailwind CSS v4 + Firebase Firestore (CDN) + Cloudflare Pages.
-
-## Local
-
+## Desarrollo
 ```bash
-npm install
-npm run dev      # http://localhost:5173
-npm run build    # dist/
-npm run preview  # http://localhost:4173
+npm install        # instalar dependencias (solo una vez)
+npm run dev        # iniciar servidor local (http://localhost:5173)
 ```
 
+## Tests
+```bash
+npm run test       # ejecutar los tests con Vitest
+```
+
+## Contribuir
+1. Forkea el repositorio.
+2. Crea una rama descriptiva (`feat/…` o `fix/…`).
+3. Ejecuta `npm install` y `npm run test` para asegurarte de que todo pasa.
+4. Haz commit con mensaje *conventional* y push a tu fork.
+5. Abre un Pull Request contra la branch `main`.
+
 ## Deploy
-
-Build de un solo archivo (`deploy/index.html` generado desde `dist/`) subido a Cloudflare Pages por carga directa.
-
-## Licencia
-
-MIT — ver [LICENSE](LICENSE).
+El proyecto se despliega automáticamente a Cloudflare Pages mediante GitHub Actions al hacer merge en `main`.
