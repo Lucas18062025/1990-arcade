@@ -278,7 +278,7 @@ export function mountSnake(root) {
     }
   }
 
-  function onTap(e) {
+  function onTap() {
     if (paused) {
       resume();
       return;

@@ -33,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Lint code
-        run: npx eslint . --ext .js,.jsx,.ts,.tsx
+        run: npx eslint .
 
       - name: Run tests
         run: npm test
@@ -41,11 +41,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # Deploy to Cloudflare Pages (requires CF_API_TOKEN secret)
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v2
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          projectName: 1990-arcade
-          directory: dist
+      # Deploy a Cloudflare Pages vía integración GitHub↔Pages
+      # (el antiguo step cloudflare/pages-action@v2 no resuelve; se eliminó).
+      # Mergear a main despliega producción automáticamente.
