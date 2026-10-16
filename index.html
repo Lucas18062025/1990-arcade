@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" style="background:#000">
+<html lang="es" style="background:#0a0a1a">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,11 +29,16 @@
   </head>
   <body>
     <div id="app" class="min-h-screen">
-      <header class="text-center pt-12 pb-8">
+      <header class="hero">
+        <p class="hero-badge">5 JUEGOS · SIN INSTALAR · GRATIS</p>
         <h1 class="arcade-title">1990 ARCADE</h1>
         <p class="insert-coin" aria-hidden="true">▶ INSERT COIN ◀</p>
-        <p><button id="snd-toggle" class="btn-back" aria-label="Activar o silenciar sonido" aria-pressed="true">🔊</button></p>
-        <p class="text-muted mt-4">Snake · Breakout · Invaders · Tetris · Pac-Man jugables.</p>
+        <p class="hero-sub">Cinco clásicos arcade jugables en el navegador: Snake, Pac-Man, Invaders, Tetris y Breakout. Con ranking online y récords locales.</p>
+        <div class="hero-cta">
+          <button id="cta-play" class="portal-btn hero-btn" type="button">▶ Jugar ahora</button>
+          <a class="btn-back hero-ghost" href="#side-board">Ver ranking</a>
+        </div>
+        <p class="hero-tools"><button id="snd-toggle" class="btn-back" aria-label="Activar o silenciar sonido" aria-pressed="true">🔊</button> <span class="hero-keys">R reiniciar · Esc hub · 1–5 juego</span></p>
       </header>
       <main class="max-w-5xl mx-auto px-6 pb-16">
         <div id="hub-cols">
