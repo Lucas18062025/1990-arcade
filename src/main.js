@@ -118,17 +118,27 @@ function renderHub() {
   grid.innerHTML = games
     .map(
       (g) => `
-    <div class="game-card ${g.locked ? "locked" : ""}${!g.locked && g.id === last ? " last-played" : ""}" data-id="${g.id}" style="--card:${g.accent || "var(--neon)"}">
+    <div class="game-card ${g.locked ? "locked" : ""}${!g.locked && g.id === last ? " last-played" : ""}" data-id="${g.id}" style="--card:${g.accent || "var(--neon)"}"${g.locked ? "" : ` tabindex="0" role="link" aria-label="Jugar ${g.name}. ${g.desc} Controles: ${g.controls || "ver en juego"}"`}>
       <p class="text-xs text-muted">GAME PORTAL</p>
       ${!g.locked && g.id === last ? `<p class="last-tag">★ ÚLTIMO JUGADO</p>` : ""}
       <div class="card-head">${pixelIcon(g.icon)}<h2 class="text-xl font-bold mt-1">${g.name}</h2></div>
-      <p class="text-muted mt-2 text-sm">Objetivo: ${g.desc}</p>
-      ${g.controls ? `<p class="text-muted mt-1 text-xs">Controles: ${g.controls}</p>` : ""}
+      <p class="card-desc">Objetivo: ${g.desc}</p>
+      ${g.controls ? `<p class="card-controls">Controles: <span class="ctrl-chip">${g.controls}</span></p>` : ""}
       <p class="best-line">BEST <b>${bestOf(g.id)}</b></p>
-      <button class="mt-4 text-sm portal-btn" ${g.locked ? "disabled" : ""}>${g.locked ? "🔒 Bloqueado" : !g.locked && g.id === last ? "▶ Continuar" : "▶ Run"}</button>
+      <button class="mt-4 text-sm portal-btn" ${g.locked ? "disabled" : ""} aria-label="${g.locked ? `${g.name} bloqueado` : `Jugar ${g.name}`}">${g.locked ? "🔒 Bloqueado" : !g.locked && g.id === last ? "▶ Continuar" : "▶ Run"}</button>
     </div>`
     )
     .join("");
+
+  // CTA del hero: scroll a la grilla sin cambiar el hash (evita re-render)
+  const ctaPlay = document.getElementById("cta-play");
+  if (ctaPlay && !ctaPlay.dataset.bound) {
+    ctaPlay.dataset.bound = "1";
+    ctaPlay.addEventListener("click", () => {
+      beep(880, 0.06);
+      document.getElementById("games-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 
   const side = document.getElementById("side-board");
   if (side) side.style.display = "";
@@ -140,6 +150,12 @@ function renderHub() {
       card.style.cursor = "pointer";
       card.onclick = () => {
         location.hash = "#/" + id;
+      };
+      card.onkeydown = (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          location.hash = "#/" + id;
+        }
       };
     }
   });
@@ -187,10 +203,14 @@ function renderHub() {
     const esc = (s) =>
       String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const bar = document.createElement("div");
-    bar.className = "mt-2 flex gap-2 flex-wrap text-xs";
+    bar.className = "mt-2 flex gap-2 flex-wrap text-xs rank-filters";
     bar.innerHTML = FILTERS.map(
       (f) => `<button data-f="${f}" class="btn-back" aria-pressed="${f === "all"}">${f === "all" ? "TODOS" : f.toUpperCase()}</button>`
     ).join("");
+    // Evita duplicar la barra de filtros si el hub se re-renderiza
+    if (board.previousElementSibling?.classList?.contains("rank-filters")) {
+      board.previousElementSibling.remove();
+    }
     board.before(bar);
     const load = () => {
       board.textContent = "Cargando ranking…";

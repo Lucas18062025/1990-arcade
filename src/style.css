@@ -6,12 +6,12 @@
    ═══════════════════════════════════════════════ */
 
 :root {
-  --bg: #000000;
-  --bg2: #0a0a0a;
+  --bg: #0a0a1a;
+  --bg2: #12122b;
   --neon: #00f0ff;
   --neon2: #ff00e5;
   --accent: #faff00;
-  --text: #c8c8d0;
+  --text: #e8e8f0;
   --muted: #8a8aa3; /* 6.24:1 sobre negro (AA) — era #5a5a73 3.14:1 */
   --green: #33ff33;
   --scanline-alpha: 0.08;
@@ -57,8 +57,8 @@ body {
     linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
   background-size: auto, 32px 32px, 32px 32px;
   color: var(--text);
-  font-family: "Press Start 2P", monospace;
-  font-size: 10px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -98,6 +98,65 @@ body {
 @keyframes coinBlink {
   0%, 60% { opacity: 1; }
   61%, 100% { opacity: 0.15; }
+}
+
+/* ── Hero (hub) ───────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: var(--neon);
+  border: 1px solid var(--neon);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
+}
+
+.hero .arcade-title {
+  margin-top: 0.5rem;
+}
+
+.hero-sub {
+  max-width: 58ch;
+  margin: 1rem auto 0;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+}
+
+.hero-ghost {
+  text-decoration: none;
+}
+
+.hero-tools {
+  margin-top: 1rem;
+}
+
+.hero-keys {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
 }
 
 /* ── Games Grid ───────────────────────────── */
@@ -176,12 +235,42 @@ body {
   color: var(--neon);
 }
 
-.game-card p {
-  font-size: 8px;
+.card-desc {
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-top: 0.6rem;
+  line-height: 1.55;
+}
+
+.card-controls {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+.ctrl-chip {
+  display: inline-block;
+  border: 1px solid var(--neon);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  white-space: nowrap;
+  margin-left: 0.25rem;
+}
+
+.game-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .game-card:hover {
   transform: scale(1.03) translateY(-2px);
+  box-shadow:
+    0 0 15px var(--card, var(--neon)),
+    0 0 30px rgba(0, 240, 255, 0.3),
+    inset 0 0 15px rgba(0, 240, 255, 0.05);
+}
+
+.game-card:focus-within {
   box-shadow:
     0 0 15px var(--card, var(--neon)),
     0 0 30px rgba(0, 240, 255, 0.3),
@@ -209,6 +298,8 @@ body {
 .portal-btn {
   background: var(--accent);
   color: #0a0a0a;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
   font-weight: bold;
   border: 2px solid #0a0a0a;
   border-radius: 999px;
@@ -292,9 +383,10 @@ body {
 }
 
 .best-line {
-  font-size: 8px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
   color: var(--muted);
-  margin-top: 0.4rem;
+  margin-top: 0.6rem;
 }
 
 .best-line b {
@@ -369,10 +461,12 @@ button.btn-back {
   .canvas-box,
   .canvas-box::before,
   .pixel-icon,
-  .insert-coin {
+  .insert-coin,
+  .hero-badge {
     animation: none;
   }
-  .game-card:hover {
+  .game-card:hover,
+  .game-card:focus-within {
     transform: none;
   }
 }
@@ -606,7 +700,7 @@ body:has(#games-grid .game-wrap) footer {
 /* ── Help text ────────────────────────────── */
 .help {
   text-align: center;
-  font-size: 7px;
+  font-size: 9px;
   font-family: "Press Start 2P", monospace;
   color: var(--muted);
   letter-spacing: 0.05em;
@@ -615,7 +709,7 @@ body:has(#games-grid .game-wrap) footer {
 /* ── Footer ───────────────────────────────── */
 footer p {
   font-family: "Press Start 2P", monospace;
-  font-size: 7px;
+  font-size: 8px;
   letter-spacing: 0.05em;
 }
 
