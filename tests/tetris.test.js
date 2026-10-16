@@ -1,12 +1,15 @@
-import { mountTetris } from '../../src/games/tetris.js';
-import { JSDOM } from 'jsdom';
+import { mountTetris } from '../src/games/tetris.js';
 
 describe('Tetris mount', () => {
   it('mount produces a canvas element', () => {
-    const dom = new JSDOM(`<!DOCTYPE html><div id="root"></div>`);
-    const root = dom.window.document.getElementById('root');
+    // Usa el document global del entorno jsdom de Vitest (ver tests/setup.js
+    // para el stub de getContext: jsdom no implementa Canvas 2D).
+    const root = document.createElement('div');
+    root.id = 'root';
+    document.body.appendChild(root);
     mountTetris(root);
-    const canvas = root.querySelector('#tetris-cv');
+    const canvas = root.querySelector('#tet-cv');
     expect(canvas).not.toBeNull();
+    document.body.removeChild(root);
   });
 });
