@@ -102,3 +102,4 @@ describe("Daily Challenges", () => {
     expect(getPlayerXP()).toBe(challenge.xp);
   });
 });
+
