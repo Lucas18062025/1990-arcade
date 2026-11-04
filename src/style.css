@@ -12,7 +12,7 @@
   --neon2: #ff00e5;
   --accent: #faff00;
   --text: #e8e8f0;
-  --muted: #8a8aa3; /* 6.24:1 sobre negro (AA) — era #5a5a73 3.14:1 */
+  --muted: #8a8aa3; /* 6.24:1 sobre negro (AA) */
   --green: #33ff33;
   --scanline-alpha: 0.08;
 }
@@ -25,7 +25,7 @@ body.matrix {
   --neon2: #00cc66;
   --accent: #ccff00;
   --text: #c0e8c0;
-  --muted: #6a9a6a; /* 6.44:1 sobre verde oscuro (AA) — era #4a6a4a 3.45:1 */
+  --muted: #6a9a6a;
 }
 
 .egg-toast {
@@ -67,6 +67,12 @@ body {
   color: var(--muted);
 }
 
+/* ── Arcade Container ─────────────────────── */
+.arcade-container {
+  max-width: 1560px;
+  width: 100%;
+}
+
 /* ── Arcade Title ─────────────────────────── */
 .arcade-title {
   font-family: "Press Start 2P", monospace;
@@ -87,7 +93,7 @@ body {
 }
 
 .insert-coin {
-  margin-top: 0.8rem;
+  margin-top: 0.7rem;
   font-size: 9px;
   letter-spacing: 0.2em;
   color: var(--accent);
@@ -103,7 +109,27 @@ body {
 /* ── Hero (hub) ───────────────────────────── */
 .hero {
   text-align: center;
-  padding: 3rem 1.5rem 2rem;
+  padding: 2.2rem 1.5rem 1.4rem;
+}
+
+.hero-top-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.hero-live-dot {
+  color: var(--green);
+  font-size: 10px;
+  animation: liveDotPulse 1.5s infinite ease-in-out;
+  text-shadow: 0 0 8px var(--green);
+}
+
+@keyframes liveDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
 }
 
 .hero-badge {
@@ -115,25 +141,31 @@ body {
   border: 1px solid var(--neon);
   border-radius: 999px;
   padding: 0.45rem 0.9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
 }
 
+.hero-snd {
+  padding: 0.3rem 0.6rem;
+  font-size: 12px;
+  line-height: 1;
+}
+
 .hero .arcade-title {
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
 }
 
 .hero-sub {
-  max-width: 58ch;
-  margin: 1rem auto 0;
+  max-width: 65ch;
+  margin: 0.8rem auto 0;
   color: var(--text);
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.55;
 }
 
 .hero-cta {
   display: flex;
-  gap: 0.8rem;
+  gap: 1rem;
   justify-content: center;
   align-items: center;
   margin-top: 1.2rem;
@@ -143,27 +175,42 @@ body {
 .hero-btn {
   font-family: "Press Start 2P", monospace;
   font-size: 10px;
+  padding: 0.75rem 1.6rem;
 }
 
 .hero-ghost {
   text-decoration: none;
+  font-size: 9px;
+  padding: 0.65rem 1.2rem;
 }
 
-.hero-tools {
-  margin-top: 1rem;
-}
-
-.hero-keys {
+.hero-ticker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin: 1.2rem auto 0;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
   color: var(--muted);
-  font-size: 0.8rem;
-  margin-left: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  background: rgba(18, 18, 43, 0.7);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 999px;
+  max-width: max-content;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.08);
 }
 
-/* ── Games Grid ───────────────────────────── */
-#games-grid {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+.hero-ticker b {
+  color: var(--neon);
 }
 
+.ticker-sep {
+  color: var(--neon2);
+}
+
+/* ── Games Grid & Hub Layout ──────────────── */
 #hub-cols {
   display: grid;
   grid-template-columns: 1fr;
@@ -171,49 +218,139 @@ body {
   align-items: start;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1024px) {
   #hub-cols {
-    grid-template-columns: 1fr 300px;
-  }
-  #hub-cols #games-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 340px;
+    gap: 1.75rem;
   }
   #side-board {
     position: sticky;
-    top: 1rem;
+    top: 1.25rem;
   }
 }
 
+@media (min-width: 1360px) {
+  #hub-cols {
+    grid-template-columns: 1fr 380px;
+    gap: 2.25rem;
+  }
+}
+
+#games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 1360px) {
+  #games-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
+  }
+}
+
+/* ── Game Card (Ficha de Competición) ──────── */
 .game-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   border: 2px solid var(--card, var(--neon));
   border-radius: 4px;
-  padding: 1.5rem;
+  padding: 1.4rem;
   background: var(--bg2);
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
   position: relative;
   overflow: hidden;
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  min-height: 380px;
+}
+
+.card-meta-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.genre-badge {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7.5px;
+  color: var(--card, var(--neon));
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--card, var(--neon));
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+
+.status-badge {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7.5px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.status-badge.last-badge {
+  color: var(--accent);
+  text-shadow: 0 0 6px var(--accent);
 }
 
 .card-head {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  margin-top: 0.5rem;
+  gap: 0.85rem;
+  margin-bottom: 0.5rem;
 }
 
-.card-head h2 {
-  margin: 0;
+.pixel-icon-box {
+  width: 50px;
+  height: 50px;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
 }
 
 .pixel-icon {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   flex: none;
   image-rendering: pixelated;
 }
 
-/* Subtle scanline on cards too */
+.card-head-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: 14px;
+  color: var(--card, var(--neon));
+  margin: 0;
+  line-height: 1.3;
+}
+
+.card-diff {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.diff-tag {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.diff-tag.diff-hard {
+  color: #ff00e5;
+}
+
+/* Subtle scanline on cards */
 .game-card::before {
   content: "";
   position: absolute;
@@ -229,23 +366,18 @@ body {
   z-index: 1;
 }
 
-.game-card h2 {
-  font-family: "Press Start 2P", monospace;
-  font-size: 14px;
-  color: var(--neon);
-}
-
 .card-desc {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text);
-  margin-top: 0.6rem;
-  line-height: 1.55;
+  line-height: 1.5;
+  margin: 0.4rem 0 0.8rem;
+  flex-grow: 1;
 }
 
 .card-controls {
   font-size: 0.75rem;
   color: var(--muted);
-  margin-top: 0.4rem;
+  margin-bottom: 0.8rem;
 }
 
 .ctrl-chip {
@@ -255,6 +387,62 @@ body {
   padding: 0.1rem 0.5rem;
   white-space: nowrap;
   margin-left: 0.25rem;
+  color: var(--text);
+}
+
+.card-stats-box {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 0.6rem 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.stat-col {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.stat-label {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.04em;
+}
+
+.stat-val {
+  font-family: "Press Start 2P", monospace;
+  font-size: 9.5px;
+  color: var(--text);
+}
+
+.stat-val.highlight {
+  color: var(--accent);
+  text-shadow: 0 0 6px rgba(250, 255, 0, 0.4);
+}
+
+.stat-val.status-text {
+  font-size: 8px;
+  color: var(--neon);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.shortcut-tip {
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--muted);
 }
 
 .game-card:focus-visible {
@@ -263,7 +451,7 @@ body {
 }
 
 .game-card:hover {
-  transform: scale(1.03) translateY(-2px);
+  transform: scale(1.025) translateY(-3px);
   box-shadow:
     0 0 15px var(--card, var(--neon)),
     0 0 30px rgba(0, 240, 255, 0.3),
@@ -291,8 +479,11 @@ body {
   opacity: 0.5;
 }
 
-.game-card.locked h2 {
-  color: var(--muted);
+.game-card.last-played {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 15px rgba(250, 255, 0, 0.35),
+    inset 0 0 15px rgba(250, 255, 0, 0.05);
 }
 
 .portal-btn {
@@ -324,19 +515,239 @@ body {
   cursor: default;
 }
 
-.board-card {
-  border-style: dashed;
+/* ── Side Panel & Components ──────────────── */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.board-card input {
+.player-passport {
+  border-color: var(--neon);
+  background: linear-gradient(180deg, rgba(18, 18, 43, 0.95) 0%, rgba(10, 10, 26, 0.98) 100%);
+  padding: 1.15rem;
+  min-height: auto;
+}
+
+.passport-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed rgba(0, 240, 255, 0.3);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.passport-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  color: var(--neon);
+  letter-spacing: 0.05em;
+}
+
+.rank-tag {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7.5px;
+  background: var(--accent);
+  color: #000;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.passport-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.passport-label {
+  font-family: "Press Start 2P", monospace;
+  font-size: 8.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.passport-row input {
   background: #000;
   border: 1px solid var(--neon);
   color: var(--accent);
+  border-radius: 3px;
+  padding: 0.4rem 0.6rem;
+  font-family: "Press Start 2P", monospace;
+  font-size: 11px;
+  width: 100%;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.passport-row input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(250, 255, 0, 0.4);
+}
+
+.passport-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
   border-radius: 4px;
-  padding: 0.3rem 0.5rem;
-  font: inherit;
-  width: 9rem;
-  margin-left: 0.4rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mini-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-k {
+  font-size: 7.5px;
+  font-family: "Press Start 2P", monospace;
+  color: var(--muted);
+}
+
+.stat-v {
+  font-size: 11px;
+  font-family: "Press Start 2P", monospace;
+  color: var(--neon);
+  margin-top: 0.25rem;
+}
+
+.board-card {
+  padding: 1.15rem;
+  border-color: rgba(0, 240, 255, 0.4);
+  border-style: dashed;
+  min-height: auto;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+  padding-bottom: 0.6rem;
+}
+
+.board-header h2 {
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  color: var(--text);
+  margin: 0.25rem 0 0;
+}
+
+.online-indicator {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7.5px;
+  color: var(--green);
+  text-shadow: 0 0 6px var(--green);
+}
+
+.rank-filters {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.rank-filters button {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--muted);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.rank-filters button:hover {
+  border-color: var(--neon);
+  color: var(--neon);
+}
+
+.rank-filters button[aria-pressed="true"] {
+  background: var(--neon);
+  color: #000;
+  border-color: var(--neon);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}
+
+.rank-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.45rem 0.55rem;
+  margin-bottom: 0.35rem;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 3px;
+  border-left: 3px solid var(--muted);
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+}
+
+.rank-row.medal-1 { border-left-color: #faff00; background: rgba(250, 255, 0, 0.08); }
+.rank-row.medal-2 { border-left-color: #c8c8d0; background: rgba(200, 200, 208, 0.06); }
+.rank-row.medal-3 { border-left-color: #ff9a3c; background: rgba(255, 154, 60, 0.06); }
+
+.rank-left {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rank-score {
+  color: var(--neon);
+  font-weight: bold;
+}
+
+.shortcuts-card {
+  padding: 1.15rem;
+  border-color: rgba(255, 255, 255, 0.15);
+  min-height: auto;
+}
+
+.shortcuts-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: 8.5px;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.shortcuts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.shortcuts-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 11px;
+  color: var(--text);
+}
+
+.key-chip {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7.5px;
+  background: #000;
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  padding: 0.2rem 0.45rem;
+  border-radius: 3px;
+  min-width: 2.2rem;
+  text-align: center;
 }
 
 .inv-touch {
@@ -364,50 +775,8 @@ body {
 }
 
 #top-list div {
-  padding: 0.15rem 0;
+  padding: 0.2rem 0;
 }
-
-.game-card.last-played {
-  border-color: var(--accent);
-  box-shadow:
-    0 0 15px rgba(250, 255, 0, 0.35),
-    inset 0 0 15px rgba(250, 255, 0, 0.05);
-}
-
-.last-tag {
-  font-size: 8px;
-  color: var(--accent);
-  text-shadow: 0 0 8px var(--accent);
-  margin-top: 0.4rem;
-  letter-spacing: 0.1em;
-}
-
-.best-line {
-  font-family: "Press Start 2P", monospace;
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 0.6rem;
-}
-
-.best-line b {
-  color: var(--accent);
-  margin-left: 0.3rem;
-}
-
-.rank-row {
-  display: flex;
-  gap: 0.5rem;
-  align-items: baseline;
-  line-height: 1.8;
-}
-
-.rank-row .medal {
-  color: var(--muted);
-}
-
-.rank-row.medal-1 .medal { color: #faff00; text-shadow: 0 0 8px #faff00; }
-.rank-row.medal-2 .medal { color: #c8c8d0; text-shadow: 0 0 8px #c8c8d0; }
-.rank-row.medal-3 .medal { color: #ff9a3c; text-shadow: 0 0 8px #ff9a3c; }
 
 /* ── Game Wrapper (HUD lives here — NO CRT) ── */
 .game-wrap {
@@ -462,7 +831,8 @@ button.btn-back {
   .canvas-box::before,
   .pixel-icon,
   .insert-coin,
-  .hero-badge {
+  .hero-badge,
+  .hero-live-dot {
     animation: none;
   }
   .game-card:hover,
@@ -487,7 +857,7 @@ button.btn-back {
   color: var(--neon);
 }
 
-/* Foco visible para navegación por teclado (nativo intacto, solo estilo) */
+/* Foco visible para navegación por teclado */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -511,17 +881,11 @@ canvas:focus-visible {
 /* ── CRT Screen Container ────────────────── */
 .canvas-box {
   position: relative;
-  /* Lo más grande posible sin deformar: manda el alto en fullscreen.
-     Reserva base 210px (header compacto + HUD + touch + ayuda) para que en
-     móvil no haya scroll. En desktop con mouse los botones touch se ocultan
-     y la reserva baja a 120px (ver media query abajo). */
   width: min(96vw, 1100px, calc((100dvh - 210px) * var(--ar, 1)));
   min-width: min(280px, 94vw);
   margin: 0 auto;
 }
 
-/* Desktop con puntero fino: los botones touch sobran (hay teclado), se
-   ocultan y el canvas crece con reserva menor. En táctil siguen visibles. */
 @media (hover: hover) and (pointer: fine) {
   .canvas-box {
     width: min(96vw, 1100px, calc((100dvh - 120px) * var(--ar, 1)));
@@ -543,8 +907,20 @@ body:has(#games-grid .game-wrap) header .arcade-title {
   font-size: clamp(1rem, 3vw, 1.5rem);
 }
 body:has(#games-grid .game-wrap) header p,
+body:has(#games-grid .game-wrap) header .hero-ticker,
+body:has(#games-grid .game-wrap) header .hero-top-strip,
+body:has(#games-grid .game-wrap) header .hero-cta,
 body:has(#games-grid .game-wrap) footer {
-  display: none;
+  display: none !important;
+}
+
+body:has(#games-grid .game-wrap) #hub-cols {
+  grid-template-columns: 1fr !important;
+  max-width: 100% !important;
+}
+
+body:has(#games-grid .game-wrap) #games-grid {
+  display: block !important;
 }
 
 /* The actual game canvas */
@@ -556,7 +932,6 @@ body:has(#games-grid .game-wrap) footer {
   background: #000;
   display: block;
   image-rendering: pixelated;
-  /* Slight CRT barrel distortion illusion */
   box-shadow:
     inset 0 0 60px rgba(0, 240, 255, 0.04),
     0 0 12px rgba(0, 0, 0, 0.8);
@@ -642,7 +1017,6 @@ body:has(#games-grid .game-wrap) footer {
   94% { opacity: 1; }
 }
 
-/* Apply subtle flicker to the whole canvas-box */
 .canvas-box {
   animation: crtFlicker 4s linear infinite;
 }
@@ -738,4 +1112,366 @@ footer p {
 
 .canvas-box.power-on {
   animation: crtPowerOn 0.6s ease-out forwards, crtFlicker 4s linear 0.6s infinite;
+}
+
+
+/* ── Fase 2: Perfil, Barra XP, Desafíos Diarios & Logros ── */
+
+.passport-xp-box {
+  margin-bottom: 0.8rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.5rem 0.6rem;
+}
+
+.xp-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  font-family: "Press Start 2P", monospace;
+  font-size: 7.5px;
+}
+
+.xp-level-text {
+  color: var(--neon);
+}
+
+.xp-points-text {
+  color: var(--muted);
+}
+
+.xp-bar-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon) 0%, var(--accent) 100%);
+  transition: width 300ms ease;
+  box-shadow: 0 0 8px var(--neon);
+}
+
+.passport-achievements-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.6rem;
+  text-align: center;
+  font-size: 8px;
+  cursor: pointer;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.passport-achievements-btn:hover {
+  background: rgba(250, 255, 0, 0.15);
+  box-shadow: 0 0 10px rgba(250, 255, 0, 0.4);
+}
+
+/* ── Daily Challenge Card ─────────────────── */
+.daily-card {
+  padding: 1.15rem;
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(25, 25, 10, 0.95) 0%, rgba(10, 10, 26, 0.98) 100%);
+  min-height: auto;
+}
+
+.daily-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px dashed rgba(250, 255, 0, 0.3);
+  padding-bottom: 0.5rem;
+}
+
+.daily-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.daily-badge {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  background: rgba(250, 255, 0, 0.2);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.daily-badge.completed {
+  background: rgba(51, 255, 51, 0.2);
+  color: var(--green);
+  border-color: var(--green);
+  text-shadow: 0 0 6px var(--green);
+}
+
+.daily-desc {
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.daily-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.daily-reward {
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--neon);
+}
+
+.daily-action-btn {
+  font-size: 7.5px;
+  padding: 0.35rem 0.6rem;
+  text-decoration: none;
+}
+
+/* ── Achievement Toast Notification ──────── */
+.achievement-toast {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: #12122b;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 10000;
+  box-shadow: 0 0 25px rgba(250, 255, 0, 0.4), 0 8px 30px rgba(0, 0, 0, 0.8);
+  animation: toastSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  max-width: 380px;
+}
+
+.achievement-toast.fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.4s ease;
+}
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.toast-badge {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.toast-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  color: #fff;
+  margin: 0;
+}
+
+.toast-xp {
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--neon);
+}
+
+/* ── Modal Overlay & Achievements Grid ───── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-box {
+  background: var(--bg2);
+  border: 2px solid var(--neon);
+  border-radius: 6px;
+  max-width: 860px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed rgba(0, 240, 255, 0.3);
+  padding-bottom: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.modal-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: 14px;
+  color: var(--neon);
+  margin: 0.3rem 0 0;
+}
+
+.modal-close {
+  cursor: pointer;
+  font-size: 8px;
+  padding: 0.4rem 0.8rem;
+}
+
+.modal-stats-strip {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.modal-stats-strip b {
+  color: var(--accent);
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 640px) {
+  .modal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.achievement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0.85rem;
+  transition: all 120ms ease;
+}
+
+.achievement-item.unlocked {
+  border-color: var(--neon);
+  background: rgba(0, 240, 255, 0.05);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+}
+
+.achievement-item.locked {
+  opacity: 0.55;
+  filter: grayscale(0.8);
+}
+
+.ach-icon-box {
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.ach-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.ach-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.ach-name {
+  font-family: "Press Start 2P", monospace;
+  font-size: 9.5px;
+  color: #fff;
+  margin: 0;
+}
+
+.achievement-item.unlocked .ach-name {
+  color: var(--neon);
+}
+
+.ach-status-tag {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  padding: 0.15rem 0.4rem;
+  border-radius: 2px;
+}
+
+.ach-status-tag.unlocked-tag {
+  background: rgba(51, 255, 51, 0.2);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+
+.ach-status-tag.locked-tag {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ach-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+  margin: 0.2rem 0 0.4rem;
+}
+
+.ach-xp-tag {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7.5px;
+  color: var(--accent);
+  margin-top: auto;
 }

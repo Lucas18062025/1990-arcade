@@ -30,40 +30,139 @@
   <body>
     <div id="app" class="min-h-screen">
       <header class="hero">
-        <p class="hero-badge">5 JUEGOS · SIN INSTALAR · GRATIS</p>
+        <div class="hero-top-strip">
+          <span class="hero-live-dot" aria-hidden="true">●</span>
+          <p class="hero-badge">5 CLÁSICOS ARCADE · SIN INSTALAR · 100% WEB</p>
+          <button id="snd-toggle" class="btn-back hero-snd" aria-label="Activar o silenciar sonido" aria-pressed="true">🔊</button>
+        </div>
         <h1 class="arcade-title">1990 ARCADE</h1>
         <p class="insert-coin" aria-hidden="true">▶ INSERT COIN ◀</p>
-        <p class="hero-sub">Cinco clásicos arcade jugables en el navegador: Snake, Pac-Man, Invaders, Tetris y Breakout. Con ranking online y récords locales.</p>
+        <p class="hero-sub">Cinco clásicos arcade jugables en el navegador: Snake, Pac-Man, Invaders, Tetris y Breakout. Con ranking online, perfil de jugador, logros y desafíos diarios.</p>
         <div class="hero-cta">
-          <button id="cta-play" class="portal-btn hero-btn" type="button">▶ Jugar ahora</button>
-          <a class="btn-back hero-ghost" href="#side-board">Ver ranking</a>
+          <button id="cta-play" class="portal-btn hero-btn" type="button">▶ JUGAR AHORA</button>
+          <a class="btn-back hero-ghost" href="#side-board">🏆 VER RANKING</a>
+          <button id="cta-achievements" class="btn-back hero-ghost" type="button">🎖 LOGROS</button>
         </div>
-        <p class="hero-tools"><button id="snd-toggle" class="btn-back" aria-label="Activar o silenciar sonido" aria-pressed="true">🔊</button> <span class="hero-keys">R reiniciar · Esc hub · 1–5 juego</span></p>
+        <div class="hero-ticker" id="hero-ticker">
+          <span class="ticker-item"><b id="ticker-games">5</b> JUEGOS DISPONIBLES</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">MEJOR PUNTUACIÓN: <b id="ticker-top-best">0</b> PTS</span>
+          <span class="ticker-sep">·</span>
+          <span class="ticker-item">TUS PARTIDAS: <b id="ticker-plays">0</b> RUNS</span>
+        </div>
       </header>
-      <main class="max-w-5xl mx-auto px-6 pb-16">
+      <main class="arcade-container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div id="hub-cols">
           <div id="games-grid" class="grid gap-6"></div>
-          <aside id="side-board" class="game-card board-card" style="display:none">
-            <p class="text-xs text-muted">RANKING ONLINE</p>
-            <h2 class="text-xl font-bold mt-1">TOP 5</h2>
-            <div class="mt-2 text-sm">
-              <label for="player-name">JUGADOR <input id="player-name" maxlength="12" placeholder="AAA" aria-label="Nombre de jugador para el ranking" autocomplete="off" /></label>
+          <aside id="side-board" class="side-panel" style="display:none">
+            <!-- Player Passport -->
+            <div class="game-card player-passport">
+              <div class="passport-header">
+                <span class="passport-title">ARCADE PASSPORT</span>
+                <span class="rank-tag" id="player-rank">ROOKIE</span>
+              </div>
+              <div class="passport-body">
+                <div class="passport-row">
+                  <label for="player-name" class="passport-label">PILOTO:</label>
+                  <input id="player-name" maxlength="12" placeholder="AAA" aria-label="Nombre de jugador para el ranking" autocomplete="off" />
+                </div>
+                <!-- XP & Level progress -->
+                <div class="passport-xp-box">
+                  <div class="xp-labels">
+                    <span class="xp-level-text" id="profile-level">NIVEL 1</span>
+                    <span class="xp-points-text" id="profile-xp">0 / 150 XP</span>
+                  </div>
+                  <div class="xp-bar-container">
+                    <div class="xp-bar-fill" id="profile-xp-bar" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div class="passport-stats">
+                  <div class="mini-stat">
+                    <span class="stat-k">TOTAL RUNS</span>
+                    <span class="stat-v" id="profile-total-runs">0</span>
+                  </div>
+                  <div class="mini-stat">
+                    <span class="stat-k">PUNTOS PB</span>
+                    <span class="stat-v" id="profile-total-pts">0</span>
+                  </div>
+                </div>
+                <button id="btn-open-achievements" class="btn-back passport-achievements-btn" type="button">
+                  🎖 LOGROS (<span id="profile-ach-count">0</span>/11)
+                </button>
+              </div>
             </div>
-            <div id="top-list" class="mt-2 text-sm text-muted">Cargando ranking…</div>
+
+            <!-- Daily Challenge Card -->
+            <div class="game-card daily-card">
+              <div class="daily-header">
+                <span class="daily-title">🎯 DESAFÍO DIARIO</span>
+                <span class="daily-badge" id="daily-status-badge">EN CURSO</span>
+              </div>
+              <p class="daily-desc" id="daily-desc">Cargando desafío…</p>
+              <div class="daily-footer">
+                <span class="daily-reward" id="daily-reward">+150 XP</span>
+                <a href="#/snake" class="btn-back daily-action-btn" id="daily-action-btn">▶ IR AL RETO</a>
+              </div>
+            </div>
+
+            <!-- Leaderboard Card -->
+            <div class="game-card board-card">
+              <div class="board-header">
+                <div>
+                  <p class="text-xs text-muted">SISTEMA COMPETITIVO</p>
+                  <h2 class="text-xl font-bold mt-1">TOP 5 RANKING</h2>
+                </div>
+                <span class="online-indicator" title="Conectado a Firestore">● LIVE</span>
+              </div>
+              <div id="top-list" class="mt-2 text-sm text-muted">Cargando ranking…</div>
+            </div>
+
+            <!-- Quick Controls Card -->
+            <div class="game-card shortcuts-card">
+              <p class="shortcuts-title">COMANDOS RÁPIDOS</p>
+              <ul class="shortcuts-list">
+                <li><kbd class="key-chip">1–5</kbd><span>Lanzar juego directo</span></li>
+                <li><kbd class="key-chip">R</kbd><span>Reiniciar partida</span></li>
+                <li><kbd class="key-chip">ESC</kbd><span>Volver al Hub</span></li>
+                <li><kbd class="key-chip">1990</kbd><span>Modo Matrix secreto</span></li>
+              </ul>
+            </div>
           </aside>
         </div>
         <footer class="text-center mt-12 text-muted text-sm">
-          <p>R = reiniciar · Esc = volver al hub · 1-5 = juego · v<span id="app-ver">0.3.0</span></p>
+          <p>R = reiniciar · Esc = volver al hub · 1-5 = juego · v<span id="app-ver">0.4.0</span></p>
         </footer>
       </main>
     </div>
+
+    <!-- Achievements Modal Dialog -->
+    <div id="achievements-modal" class="modal-overlay" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modal-ach-title">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div>
+            <span class="text-xs text-muted">SISTEMA DE PROGRESIÓN</span>
+            <h2 id="modal-ach-title" class="modal-title">🏆 MEDALLAS &amp; LOGROS</h2>
+          </div>
+          <button id="modal-close-btn" class="btn-back modal-close" type="button" aria-label="Cerrar ventana">✕ CERRAR</button>
+        </div>
+        <div class="modal-stats-strip">
+          <div>DESBLOQUEADOS: <b id="modal-ach-unlocked-count">0</b> / 11</div>
+          <div>XP TOTAL: <b id="modal-ach-total-xp">0</b> XP</div>
+          <div>NIVEL: <b id="modal-ach-level">1</b></div>
+        </div>
+        <div id="modal-achievements-list" class="modal-grid">
+          <!-- Dynamic achievements list injected by JS -->
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "VideoGame",
       "name": "1990 Arcade",
-      "description": "Hub retro con Snake, Breakout, Invaders, Tetris y Pac-Man + ranking online.",
+      "description": "Hub retro con Snake, Breakout, Invaders, Tetris y Pac-Man + ranking online y sistema de logros.",
       "genre": "Arcade",
       "inLanguage": "es-AR",
       "url": "https://1990-arcade.pages.dev/",

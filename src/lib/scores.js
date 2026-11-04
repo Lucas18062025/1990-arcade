@@ -1,3 +1,5 @@
+import { checkScoreAchievements } from "./profile.js";
+
 const APP_URL = "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 const FS_URL = "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -32,9 +34,12 @@ export function setPlayerName(n) {
   localStorage.setItem(NAME_KEY, (n || "ANON").toUpperCase().slice(0, 12));
 }
 
-// Guarda solo récords; falla en silencio si no hay red (el juego local sigue andando)
+// Guarda solo récords; evalúa logros y retos diarios; falla en silencio si no hay red
 export async function saveBest(game, score) {
   try {
+    // Evaluar logros asociados a marcas y récord
+    checkScoreAchievements(game, score);
+
     const d = await db();
     if (!d) return;
     const { collection, addDoc, serverTimestamp } = await import(/* @vite-ignore */ FS_URL);
