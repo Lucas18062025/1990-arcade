@@ -39,6 +39,7 @@ export function mountBreakout(root) {
 
   let paddle, ball, bricks, parts, shake, stars, score, best, raf, alive, started, moveL, moveR;
   let paused = false;
+  let newRecord = false;
 
   best = Number(localStorage.getItem(BEST_KEY) || 0);
   elBest.textContent = best;
@@ -78,6 +79,7 @@ export function mountBreakout(root) {
     alive = true;
     started = false;
     paused = false;
+    newRecord = false;
     moveL = moveR = false;
     elScore.textContent = "0";
     draw();
@@ -182,7 +184,7 @@ export function mountBreakout(root) {
           best = score;
           localStorage.setItem(BEST_KEY, String(best));
           elBest.textContent = best;
-          saveBest("breakout", score);
+          newRecord = true;
         }
         break;
       }
@@ -194,6 +196,10 @@ export function mountBreakout(root) {
 
   function die(win) {
     alive = false;
+    if (newRecord && score > 0) {
+      newRecord = false;
+      saveBest("breakout", score);
+    }
     if (!win) shake = 10;
     cancelAnimationFrame(raf);
     showOver(win);

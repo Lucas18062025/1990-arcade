@@ -11,11 +11,21 @@ self.addEventListener("install", (e) => {
 });
 
 self.addEventListener("activate", (e) => {
-  e.waitUntil(self.clients.claim());
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
+
+  // No cachear peticiones cross-origin (ej. Firestore API, Google Fonts, etc.)
+  // Evita congelar el leaderboard y que queden datos obsoletos
+  const url = new URL(e.request.url);
+  if (url.origin !== self.location.origin) return;
+
   e.respondWith(
     caches.match(e.request).then(
       (hit) =>

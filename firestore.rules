@@ -7,13 +7,19 @@ service cloud.firestore {
     match /scores/{id} {
       allow read: if true;
       allow create: if request.resource.data.keys().hasOnly(['game', 'name', 'score', 'at'])
-        && request.resource.data.game in ['snake', 'breakout', 'invaders', 'tetris']
+        && request.resource.data.game in ['snake', 'breakout', 'invaders', 'tetris', 'pacman']
         && request.resource.data.name is string
         && request.resource.data.name.size() >= 1
         && request.resource.data.name.size() <= 12
-        && request.resource.data.score is number
-        && request.resource.data.score >= 0
-        && request.resource.data.score <= 999999;
+        && request.resource.data.score is int
+        && (
+          (request.resource.data.game == 'breakout' && request.resource.data.score >= 0 && request.resource.data.score <= 400) ||
+          (request.resource.data.game == 'snake' && request.resource.data.score >= 0 && request.resource.data.score <= 8000) ||
+          (request.resource.data.game == 'pacman' && request.resource.data.score >= 0 && request.resource.data.score <= 50000) ||
+          (request.resource.data.game == 'invaders' && request.resource.data.score >= 0 && request.resource.data.score <= 100000) ||
+          (request.resource.data.game == 'tetris' && request.resource.data.score >= 0 && request.resource.data.score <= 999999)
+        )
+        && request.resource.data.at == request.time;
       allow update, delete: if false;
     }
     match /{rest=**} {
@@ -21,3 +27,4 @@ service cloud.firestore {
     }
   }
 }
+

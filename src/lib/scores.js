@@ -27,15 +27,22 @@ function db() {
 }
 
 export function playerName() {
-  return (localStorage.getItem(NAME_KEY) || "ANON").toUpperCase().slice(0, 12);
+  const raw = localStorage.getItem(NAME_KEY) || "ANON";
+  return raw.replace(/[^a-zA-Z0-9_\- ]/g, "").toUpperCase().slice(0, 12) || "ANON";
 }
 
 export function setPlayerName(n) {
-  localStorage.setItem(NAME_KEY, (n || "ANON").toUpperCase().slice(0, 12));
+  const clean = String(n || "ANON").replace(/[^a-zA-Z0-9_\- ]/g, "").toUpperCase().slice(0, 12) || "ANON";
+  localStorage.setItem(NAME_KEY, clean);
 }
 
 // Guarda solo récords; evalúa logros y retos diarios; falla en silencio si no hay red
 export async function saveBest(game, score) {
+  const VALID_GAMES = ["snake", "breakout", "invaders", "tetris", "pacman"];
+  if (!VALID_GAMES.includes(game)) return;
+  const cleanScore = Math.floor(Number(score) || 0);
+  if (cleanScore <= 0) return;
+
   try {
     // Evaluar logros asociados a marcas y récord
     checkScoreAchievements(game, score);
@@ -46,11 +53,14 @@ export async function saveBest(game, score) {
     await addDoc(collection(d, "scores"), {
       game,
       name: playerName(),
-      score: Math.floor(score),
+      score: cleanScore,
       at: serverTimestamp(),
     });
-  } catch {
+  } catch (err) {
     /* ranking offline: no pasa nada */
+    if (typeof import.meta !== "undefined" && import.meta.env?.DEV) {
+      console.warn("[arcade] saveBest error:", err);
+    }
   }
 }
 
