@@ -2,7 +2,7 @@
 
 ### Buenas prácticas
 - Usa **commits con formato conventional** (`feat:`, `fix:`, `docs:` …).
-- Mantén la rama `main` protegida; trabaja siempre en ramas cortas y abre PRs.
+- Mantén la rama `master` protegida; trabaja siempre en ramas cortas y abre PRs.
 - Ejecuta `npm run lint` y `npm run test` antes de push.
 - No agregues archivos de configuración sensibles al repositorio.
 

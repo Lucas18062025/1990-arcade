@@ -1,9 +1,11 @@
 # Headers de seguridad (Cloudflare Pages los aplica en cada deploy).
 # X-Content-Type-Options ya lo envía Cloudflare por defecto.
-# CSP allowlista lo justo: bundle propio + Firebase (gstatic) + Google Fonts.
+# CSP allowlista lo justo: bundle propio + Firebase (gstatic, auth) + Google Fonts.
 # inline styles necesarios por plantillas de juegos (style="--ar" y <style> Tetris).
+# connect-src cubre: Firestore (REST + WS), Identity Toolkit y token refresh (auth
+# anónima) e Installations (FID que requiere el SDK de Auth).
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.gstatic.com https://firestore.googleapis.com wss://firestore.googleapis.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.gstatic.com https://firestore.googleapis.com wss://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'
   Permissions-Policy: fullscreen=(self)
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains

@@ -1,6 +1,7 @@
 import { checkScoreAchievements } from "./profile.js";
 
 const APP_URL = "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+const AUTH_URL = "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 const FS_URL = "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -14,13 +15,23 @@ const firebaseConfig = {
 
 const NAME_KEY = "arcade-name";
 let dbp = null;
+let authUid = null;
 
 function db() {
   if (!dbp) {
     dbp = (async () => {
       const { initializeApp } = await import(/* @vite-ignore */ APP_URL);
+      const { getAuth, signInAnonymously } = await import(/* @vite-ignore */ AUTH_URL);
+      const app = initializeApp(firebaseConfig);
+      // Ranking con auth anónima: sin usuario no hay escritura (firestore.rules).
+      try {
+        const cred = await signInAnonymously(getAuth(app));
+        authUid = cred?.user?.uid || null;
+      } catch {
+        authUid = null; // sin auth: el ranking queda en modo solo lectura
+      }
       const { getFirestore } = await import(/* @vite-ignore */ FS_URL);
-      return getFirestore(initializeApp(firebaseConfig));
+      return getFirestore(app);
     })().catch(() => null);
   }
   return dbp;
@@ -48,13 +59,14 @@ export async function saveBest(game, score) {
     checkScoreAchievements(game, score);
 
     const d = await db();
-    if (!d) return;
+    if (!d || !authUid) return;
     const { collection, addDoc, serverTimestamp } = await import(/* @vite-ignore */ FS_URL);
     await addDoc(collection(d, "scores"), {
       game,
       name: playerName(),
       score: cleanScore,
       at: serverTimestamp(),
+      uid: authUid,
     });
   } catch (err) {
     /* ranking offline: no pasa nada */

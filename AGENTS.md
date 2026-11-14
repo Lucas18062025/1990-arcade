@@ -1,4 +1,4 @@
-# AGENTS.md — antigravity-arcade
+# AGENTS.md — 1990-arcade
 
 > Gana a global ante conflicto.
 
@@ -23,11 +23,11 @@
 - `npm run preview` — preview build
 
 ## Git
-- Chico: push directo a `main`.
+- Chico: push directo a `master`.
 - Grande: rama `feat/...` o `fix/...` + PR.
 - Antes de commit: `git status`, `git diff`, `git log --oneline -10`. Sin secretos.
 
 ## Prohibido
 - Commitear `node_modules/`, `dist/`, secretos.
 - Instalar deps sin aprobación explícita.
-- Salir de `antigravity-arcade/` sin permiso.
+- Salir de `1990-arcade/` sin permiso.

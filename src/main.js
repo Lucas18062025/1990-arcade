@@ -642,7 +642,11 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
 
 // Easter egg: teclear 1990 alterna paleta matrix/neón (persiste)
 const PAL_KEY = "arcade-palette";
-if (localStorage.getItem(PAL_KEY) === "matrix") document.body.classList.add("matrix");
+try {
+  if (localStorage.getItem(PAL_KEY) === "matrix") document.body.classList.add("matrix");
+} catch {
+  /* storage bloqueado: arranca en paleta neón */
+}
 let seq = "";
 function toast(msg) {
   document.querySelector(".egg-toast")?.remove();
@@ -658,7 +662,11 @@ window.addEventListener("keydown", (e) => {
     if (seq === "1990") {
       seq = "";
       const on = document.body.classList.toggle("matrix");
-      localStorage.setItem(PAL_KEY, on ? "matrix" : "neon");
+      try {
+        localStorage.setItem(PAL_KEY, on ? "matrix" : "neon");
+      } catch {
+        /* storage bloqueado: la paleta no persiste, no pasa nada */
+      }
       toast(on ? "MATRIX MODE" : "NEON MODE");
       unlockAchievement("MATRIX_VISION");
     }

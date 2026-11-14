@@ -1,4 +1,4 @@
-const CACHE = "arcade-v1";
+const CACHE = "arcade-v2";
 const ASSETS = ["/", "/manifest.json", "/icon-192.png", "/icon-512.png", "/shot-hub.png"];
 
 self.addEventListener("install", (e) => {
@@ -26,6 +26,22 @@ self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
 
+  // Network-first para navegaciones (HTML): los redeploys llegan en la próxima
+  // visita sin depender de bump manual de versión. Fallback a cache offline.
+  if (e.request.mode === "navigate") {
+    e.respondWith(
+      fetch(e.request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(e.request, copy));
+          return res;
+        })
+        .catch(() => caches.match(e.request).then((hit) => hit || caches.match("/")))
+    );
+    return;
+  }
+
+  // Cache-first para el resto (assets hasheados, manifest, iconos, screenshots)
   e.respondWith(
     caches.match(e.request).then(
       (hit) =>
