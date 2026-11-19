@@ -48,6 +48,7 @@ export function mountSnake(root) {
 
   let snake, dir, nextDir, food, stars, score, best, timer, alive, started, parts, shake;
   let paused = false;
+  let newRecord = false;
 
   best = Number(localStorage.getItem(BEST_KEY) || 0);
   elBest.textContent = best;
@@ -63,6 +64,7 @@ export function mountSnake(root) {
     score = 0;
     alive = true;
     started = false;
+    newRecord = false;
     parts = [];
     shake = 0;
     stars = Array.from({ length: 90 }, () => ({
@@ -157,7 +159,7 @@ export function mountSnake(root) {
         best = score;
         localStorage.setItem(BEST_KEY, String(best));
         elBest.textContent = best;
-        saveBest("snake", score);
+        newRecord = true;
       }
       placeFood();
       clearInterval(timer);
@@ -170,6 +172,10 @@ export function mountSnake(root) {
 
   function die() {
     alive = false;
+    if (newRecord && score > 0) {
+      newRecord = false;
+      saveBest("snake", score);
+    }
     shake = 10;
     clearInterval(timer);
     showOver();

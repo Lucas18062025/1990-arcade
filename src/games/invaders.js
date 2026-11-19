@@ -46,6 +46,7 @@ export function mountInvaders(root) {
 
   let player, bullets, ebullets, enemies, stars, score, lives, best, raf, alive, started, moveL, moveR, edir, etick, wave, shake;
   let paused = false;
+  let newRecord = false;
 
   best = Number(localStorage.getItem(BEST_KEY) || 0);
   elBest.textContent = best;
@@ -88,6 +89,7 @@ export function mountInvaders(root) {
     alive = true;
     started = false;
     paused = false;
+    newRecord = false;
     moveL = moveR = false;
     elScore.textContent = "0";
     elLives.textContent = "3";
@@ -148,7 +150,7 @@ export function mountInvaders(root) {
       best = score;
       localStorage.setItem(BEST_KEY, String(best));
       elBest.textContent = best;
-      saveBest("invaders", score);
+      newRecord = true;
     }
   }
 
@@ -254,6 +256,10 @@ export function mountInvaders(root) {
 
   function die(win) {
     alive = false;
+    if (newRecord && score > 0) {
+      newRecord = false;
+      saveBest("invaders", score);
+    }
     cancelAnimationFrame(raf);
     showOver(win);
     draw();

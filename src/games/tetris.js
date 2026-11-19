@@ -64,6 +64,7 @@ export function mountTetris(root) {
 
   let board, cur, score, lines, level, best, raf, alive, started, last, dropMs, parts, shake, flash;
   let paused = false;
+  let newRecord = false;
 
   best = Number(localStorage.getItem(BEST_KEY) || 0);
   elBest.textContent = best;
@@ -83,6 +84,7 @@ export function mountTetris(root) {
     alive = true;
     started = false;
     paused = false;
+    newRecord = false;
     dropMs = 500;
     elScore.textContent = "0";
     elLines.textContent = "0";
@@ -160,7 +162,7 @@ export function mountTetris(root) {
         best = score;
         localStorage.setItem(BEST_KEY, String(best));
         elBest.textContent = best;
-        saveBest("tetris", score);
+        newRecord = true;
       }
     }
   }
@@ -198,7 +200,7 @@ export function mountTetris(root) {
       best = score;
       localStorage.setItem(BEST_KEY, String(best));
       elBest.textContent = best;
-      saveBest("tetris", score);
+      newRecord = true;
     }
     if (alive) spawn();
     draw();
@@ -254,6 +256,10 @@ export function mountTetris(root) {
 
   function die() {
     alive = false;
+    if (newRecord && score > 0) {
+      newRecord = false;
+      saveBest("tetris", score);
+    }
     shake = 10;
     cancelAnimationFrame(raf);
     draw();

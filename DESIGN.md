@@ -1,4 +1,4 @@
-# DESIGN.md — antigravity-arcade
+# DESIGN.md — 1990-arcade
 
 Fuente de verdad visual. Todo juego nuevo la respeta.
 

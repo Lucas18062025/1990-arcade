@@ -1,11 +1,13 @@
 # Headers de seguridad (Cloudflare Pages los aplica en cada deploy).
-# X-Content-Type-Options y Referrer-Policy ya los envía Cloudflare: no duplicar.
+# X-Content-Type-Options lo envía Cloudflare. Referrer-Policy NO es un header
+# por defecto de Pages: se declara acá a propósito (strict-origin-when-cross-origin).
 # CSP allowlista lo justo: bundle propio + Firebase (SDK, auth anónima y
 # Firestore) + Google Fonts. Los estilos inline son necesarios por las
 # plantillas de los juegos (style="--ar" y el <style> de Tetris).
 /*
   Content-Security-Policy: default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.gstatic.com https://firestore.googleapis.com wss://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'; upgrade-insecure-requests
   Permissions-Policy: fullscreen=(self), autoplay=(self)
+  Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 # El SW no puede quedar cacheado: de él depende que llegue el próximo deploy.

@@ -71,17 +71,20 @@ export function mountPacman(root) {
     return 150;
   }
 
+  let newRecord = false;
+
   function maybeBest() {
     elScore.textContent = S.score;
     if (S.score > best) {
       best = S.score;
       localStorage.setItem(BEST_KEY, String(best));
       elBest.textContent = best;
-      saveBest("pacman", S.score);
+      newRecord = true;
     }
   }
 
   function reset() {
+    newRecord = false;
     S = initialState();
     elScore.textContent = 0;
     elLives.textContent = 3;
@@ -154,6 +157,10 @@ export function mountPacman(root) {
     alive = false;
     clearInterval(timer);
     maybeBest();
+    if (newRecord && S.score > 0) {
+      newRecord = false;
+      saveBest("pacman", S.score);
+    }
     showOver();
     draw();
   }
@@ -162,6 +169,10 @@ export function mountPacman(root) {
     won = true;
     clearInterval(timer);
     maybeBest();
+    if (newRecord && S.score > 0) {
+      newRecord = false;
+      saveBest("pacman", S.score);
+    }
     overlay.style.display = "flex";
     overlay.innerHTML = `<div><h3>YOU WIN</h3><p>Score ${S.score} · Best ${best}</p><button id="pac-again">JUGAR OTRA (R)</button></div>`;
     overlay.querySelector("#pac-again").onclick = (e) => {
