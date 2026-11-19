@@ -72,6 +72,7 @@ describe("Escritura online del ranking", () => {
       score: 120,
       at: "SERVER_TS",
       uid: "uid_test_1",
+      scoreId: "uid_test_1_snake_120",
     });
     expect(getPendingScores()).toEqual({});
   });

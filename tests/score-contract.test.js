@@ -57,7 +57,7 @@ describe("Sincronización entre firestore.rules y el cliente", () => {
   });
 
   it("acepta exactamente los campos que envía el cliente", () => {
-    expect(rules).toMatch(/hasOnly\(\['game', 'name', 'score', 'at', 'uid'\]\)/);
+    expect(rules).toMatch(/hasOnly\(\[.game', 'name', 'score', 'at', 'uid', 'scoreId'\]\)/);
   });
 
   it("valida el uid contra el token", () => {

@@ -210,6 +210,7 @@ export async function flushScores() {
           score,
           at: serverTimestamp(),
           uid: fb.uid,
+          scoreId: `${fb.uid}_${game}_${score}`,
         });
         markSaved(game, score);
         pending.delete(game);

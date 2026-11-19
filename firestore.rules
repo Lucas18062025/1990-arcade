@@ -53,11 +53,11 @@ service cloud.firestore {
       // declarado igual al del token, esquema cerrado y techo por juego.
       // El ID del documento es determinista (uid_juego_puntaje): hace la
       // escritura idempotente y evita duplicados por reintentos.
+      // scoreId se envía como campo determinista: uid_juego_puntaje.
       allow create: if request.auth != null
-        && request.resource.data.keys().hasOnly(['game', 'name', 'score', 'at', 'uid'])
+        && request.resource.data.keys().hasOnly(['game', 'name', 'score', 'at', 'uid', 'scoreId'])
         && request.resource.data.uid == request.auth.uid
-        && scoreId == request.auth.uid + '_' + request.resource.data.game
-                    + '_' + string(request.resource.data.score)
+        && request.resource.data.scoreId == request.auth.uid + '_' + request.resource.data.game + '_' + string(request.resource.data.score)
         && request.resource.data.game in ['snake', 'breakout', 'invaders', 'tetris', 'pacman']
         && validName(request.resource.data.name)
         && request.resource.data.score is int
