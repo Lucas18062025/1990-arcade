@@ -4,7 +4,7 @@ import { mountBreakout } from "./games/breakout.js";
 import { mountInvaders } from "./games/invaders.js";
 import { mountTetris } from "./games/tetris.js";
 import { mountPacman } from "./games/pacman.js";
-import { topScores, playerName, setPlayerName } from "./lib/scores.js";
+import { topScores, playerName, setPlayerName, SCORE_EVENT } from "./lib/scores.js";
 import {
   getPlayerXP,
   calculateLevel,
@@ -612,10 +612,22 @@ async function renderRoute() {
 window.addEventListener("hashchange", renderRoute);
 renderRoute();
 
+// Los atajos globales no deben secuestrar lo que el jugador escribe.
+function isTypingTarget(target) {
+  if (!target || typeof target !== "object") return false;
+  const tag = String(target.tagName || "").toUpperCase();
+  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable === true;
+}
+
+function hasModifier(e) {
+  return e.ctrlKey || e.metaKey || e.altKey;
+}
+
 // Atajos 1-5 para lanzar juegos desde el hub
 window.addEventListener("keydown", (e) => {
   const hash = location.hash || "#/";
   if (hash !== "#/" && hash !== "") return;
+  if (isTypingTarget(e.target) || hasModifier(e)) return;
   if (/^[1-5]$/.test(e.key)) {
     const g = games[Number(e.key) - 1];
     if (g && !g.locked) location.hash = "#/" + g.id;
@@ -635,9 +647,21 @@ try {
   /* noop */
 }
 
-// PWA: service worker solo en https o localhost (offline + instalable)
-if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+// PWA: service worker SOLO en el build de producción.
+// En `npm run dev` un SW cache-first sirve CSS/JS viejos e ignora el HMR
+// (pasó durante la auditoría: la hoja de estilos quedaba congelada). Si un
+// SW de una prueba anterior quedó registrado, se desregistra y se purgan
+// sus cachés para devolver el control a Vite.
+if ("serviceWorker" in navigator) {
+  if (import.meta.env.PROD) {
+    window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+  } else {
+    navigator.serviceWorker
+      .getRegistrations()
+      .then((regs) => Promise.all(regs.map((reg) => reg.unregister())))
+      .then(() => (typeof caches === "undefined" ? null : caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key))))))
+      .catch(() => {});
+  }
 }
 
 // Easter egg: teclear 1990 alterna paleta matrix/neón (persiste)
@@ -653,6 +677,10 @@ function toast(msg) {
   setTimeout(() => t.remove(), 1500);
 }
 window.addEventListener("keydown", (e) => {
+  if (isTypingTarget(e.target) || hasModifier(e)) {
+    seq = "";
+    return;
+  }
   if (e.key.length === 1) {
     seq = (seq + e.key.toLowerCase()).slice(-4);
     if (seq === "1990") {
@@ -663,4 +691,28 @@ window.addEventListener("keydown", (e) => {
       unlockAchievement("MATRIX_VISION");
     }
   }
+});
+
+// Estado de sincronización del ranking: si el récord no se pudo guardar,
+// el jugador se entera (antes el error se descartaba en silencio).
+let syncErrorShown = false;
+window.addEventListener(SCORE_EVENT, (event) => {
+  const { status, reason } = event.detail || {};
+  if (status !== "error" && status !== "rejected") {
+    if (status === "saved") syncErrorShown = false;
+    return;
+  }
+  if (status === "rejected") {
+    console.warn("[arcade] puntaje descartado:", reason);
+    return;
+  }
+  if (syncErrorShown) return;
+  syncErrorShown = true;
+  const el = document.createElement("div");
+  el.className = "egg-toast";
+  el.setAttribute("role", "status");
+  el.setAttribute("aria-live", "polite");
+  el.textContent = "RÉCORD LOCAL · RANKING SIN CONEXIÓN";
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4000);
 });

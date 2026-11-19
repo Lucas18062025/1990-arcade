@@ -98,7 +98,10 @@ let sessionRuns = 0;
 
 export function getPlayerXP() {
   try {
-    return Number(localStorage.getItem(XP_KEY) || 0) || 0;
+    const raw = Number(localStorage.getItem(XP_KEY) || 0);
+    if (!Number.isFinite(raw) || raw < 0) return 0;
+    // Techo defensivo: un valor corrupto no debe romper la barra de progreso.
+    return Math.min(Math.floor(raw), 10_000_000);
   } catch {
     return 0;
   }
@@ -148,7 +151,13 @@ export function calculateLevel(xp) {
 export function getUnlockedAchievements() {
   try {
     const raw = localStorage.getItem(ACH_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    // Storage puede estar corrupto o haber sido editado a mano: sólo
+    // aceptamos un array de IDs conocidos, sin duplicados.
+    if (!Array.isArray(parsed)) return [];
+    const known = new Set(ACHIEVEMENTS.map((a) => a.id));
+    return [...new Set(parsed.filter((id) => typeof id === "string" && known.has(id)))];
   } catch {
     return [];
   }
