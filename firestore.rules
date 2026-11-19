@@ -1,22 +1,75 @@
 rules_version = '2';
+
+// ═══════════════════════════════════════════════════════════════════
+// Reglas de Firestore — 1990 Arcade
+//
+// Contrato con el cliente (src/lib/score-contract.js):
+//   { game, name, score, at, uid }
+//
+// Los techos por juego y el largo del nombre están duplicados a propósito:
+// las reglas no pueden importar JavaScript. `tests/score-contract.test.js`
+// falla si el cliente y este archivo se desincronizan.
+//
+// DECISIÓN DE DISEÑO: la lectura del ranking es pública. El ranking es el
+// producto; exigir auth para leerlo rompería el hub para cualquiera que
+// todavía no haya jugado. Como contrapartida, cada documento expone el uid
+// anónimo del jugador: es un identificador aleatorio sin datos personales.
+//
+// LIMITACIÓN CONOCIDA: la auth anónima demuestra que quien escribe es un
+// usuario del proyecto, NO que el puntaje sea legítimo. Un cliente
+// modificado puede enviar cualquier score dentro del techo. Los límites por
+// juego acotan el daño; la defensa real requiere validación server-side
+// (Cloud Functions / App Check con atestación), fuera del alcance actual.
+//
+// Publicación:  firebase deploy --only firestore:rules,firestore:indexes
+// Verificación: firebase emulators:start --only firestore,auth
+// ═══════════════════════════════════════════════════════════════════
+
 service cloud.firestore {
-  match /databases/{db}/documents {
-    // Ranking: lectura pública, escritura validada (sin auth, anti-spam básico).
-    // Aplicar en Firebase Console > Firestore > Rules. Crear índice compuesto
-    // game ASC + score DESC si usan el filtro por juego con orderBy.
-    match /scores/{id} {
+  match /databases/{database}/documents {
+
+    // Techo de puntaje por juego (ver justificación en score-contract.js).
+    function maxScore(game) {
+      return game == 'snake'    ? 10000
+           : game == 'pacman'   ? 20000
+           : game == 'invaders' ? 20000
+           : game == 'tetris'   ? 50000
+           : game == 'breakout' ? 20000
+           : 0;
+    }
+
+    function validName(name) {
+      return name is string
+        && name.size() >= 1
+        && name.size() <= 12
+        && name.matches('^[A-Za-z0-9 _-]+$');
+    }
+
+    match /scores/{scoreId} {
+      // Lectura pública del ranking (decisión de diseño, ver cabecera).
       allow read: if true;
-      allow create: if request.resource.data.keys().hasOnly(['game', 'name', 'score', 'at'])
-        && request.resource.data.game in ['snake', 'breakout', 'invaders', 'tetris']
-        && request.resource.data.name is string
-        && request.resource.data.name.size() >= 1
-        && request.resource.data.name.size() <= 12
-        && request.resource.data.score is number
-        && request.resource.data.score >= 0
-        && request.resource.data.score <= 999999;
+
+      // Escritura: sólo usuarios autenticados (auth anónima), con el UID
+      // declarado igual al del token, esquema cerrado y techo por juego.
+      // El ID del documento es determinista (uid_juego_puntaje): hace la
+      // escritura idempotente y evita duplicados por reintentos.
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['game', 'name', 'score', 'at', 'uid'])
+        && request.resource.data.uid == request.auth.uid
+        && scoreId == request.auth.uid + '_' + request.resource.data.game
+                    + '_' + string(request.resource.data.score)
+        && request.resource.data.game in ['snake', 'breakout', 'invaders', 'tetris', 'pacman']
+        && validName(request.resource.data.name)
+        && request.resource.data.score is int
+        && request.resource.data.score > 0
+        && request.resource.data.score <= maxScore(request.resource.data.game)
+        && request.resource.data.at == request.time;
+
+      // Un récord es inmutable: no se edita ni se borra desde el cliente.
       allow update, delete: if false;
     }
-    match /{rest=**} {
+
+    match /{document=**} {
       allow read, write: if false;
     }
   }
