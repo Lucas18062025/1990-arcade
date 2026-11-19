@@ -60,7 +60,6 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 15px;
   line-height: 1.6;
-  overflow-x: hidden;
 }
 
 .text-muted {
@@ -213,14 +212,16 @@ body {
 /* ── Games Grid & Hub Layout ──────────────── */
 #hub-cols {
   display: grid;
-  grid-template-columns: 1fr;
+  /* minmax(0, 1fr): sin el 0, el track no baja del min-content del hijo y
+     desborda el padding del contenedor a 320 px. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
   align-items: start;
 }
 
 @media (min-width: 1024px) {
   #hub-cols {
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: minmax(0, 1fr) 340px;
     gap: 1.75rem;
   }
   #side-board {
@@ -231,14 +232,16 @@ body {
 
 @media (min-width: 1360px) {
   #hub-cols {
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: minmax(0, 1fr) 380px;
     gap: 2.25rem;
   }
 }
 
 #games-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  /* min-width:0 evita que el min-content de las tarjetas ensanche el track. */
+  min-width: 0;
   gap: 1.5rem;
 }
 
@@ -780,7 +783,9 @@ body {
 
 /* ── Game Wrapper (HUD lives here — NO CRT) ── */
 .game-wrap {
-  max-width: min(96vw, 1100px);
+  /* 100% del contenedor (ya tiene padding): 96vw desbordaba 3-7 px a 320. */
+  max-width: min(100%, 1100px);
+  min-width: 0;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -881,14 +886,17 @@ canvas:focus-visible {
 /* ── CRT Screen Container ────────────────── */
 .canvas-box {
   position: relative;
-  width: min(96vw, 1100px, calc((100dvh - 210px) * var(--ar, 1)));
-  min-width: min(280px, 94vw);
+  /* 100% (no vw): el contenedor ya descuenta su padding. Con vw la caja
+     medía 96% del viewport y desbordaba 3-7 px a 320/360. */
+  width: min(100%, 1100px, calc((100dvh - 210px) * var(--ar, 1)));
+  max-width: 100%;
+  min-width: min(280px, 100%);
   margin: 0 auto;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .canvas-box {
-    width: min(96vw, 1100px, calc((100dvh - 120px) * var(--ar, 1)));
+    width: min(100%, 1100px, calc((100dvh - 120px) * var(--ar, 1)));
   }
   .snake-touch,
   .inv-touch,
@@ -915,7 +923,7 @@ body:has(#games-grid .game-wrap) footer {
 }
 
 body:has(#games-grid .game-wrap) #hub-cols {
-  grid-template-columns: 1fr !important;
+  grid-template-columns: minmax(0, 1fr) !important;
   max-width: 100% !important;
 }
 

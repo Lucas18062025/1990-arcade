@@ -48,9 +48,15 @@ npm install        # instalar dependencias (solo una vez)
 npm run dev        # iniciar servidor local (http://localhost:5173)
 ```
 
+`npm run dev` **no** toca el ranking de producción: el modo de red por defecto
+es `auto` (producción → Firebase real, desarrollo → sin red). Para usar los
+emuladores locales, ver [docs/FIREBASE.md](docs/FIREBASE.md).
+
 ## Tests
 ```bash
-npm run test       # ejecutar los tests con Vitest
+npm test           # tests con Vitest
+npm run lint       # ESLint
+npm run verify     # lint + tests + build
 ```
 
 ## Controles globales
@@ -64,4 +70,11 @@ npm run test       # ejecutar los tests con Vitest
 5. Abre un Pull Request contra la branch `master`.
 
 ## Deploy
-El proyecto se despliega automáticamente a Cloudflare Pages mediante GitHub Actions al hacer push en `master`.
+Cloudflare Pages sirve `dist/` en <https://1990-arcade.pages.dev/>. El workflow
+de GitHub Actions (`.github/workflows/ci.yml`) valida lint, tests y build, pero
+**no despliega**: la publicación se hace desde el panel de Cloudflare Pages o
+con `wrangler pages deploy dist`.
+
+Antes de publicar, revisar la checklist de [docs/FIREBASE.md](docs/FIREBASE.md):
+auth anónima habilitada, orden de deploy (cliente antes que reglas) y
+verificación del ranking.

@@ -2,3 +2,8 @@ node_modules/
 dist/
 deploy/
 *.zip
+
+# Entorno local (nunca versionar credenciales ni overrides locales)
+.env
+.env.local
+.env.*.local
