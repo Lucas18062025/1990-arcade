@@ -55,6 +55,10 @@ Dos barreras independientes:
 - La cola se guarda en `localStorage` (`arcade-queue-v1`) **antes** de tocar la
   red: cerrar la pestaña, recargar o perder conexión no pierde el récord.
 - Al volver a abrir, la cola se restaura y se reintenta.
+- Cada juego llama a `saveBest()` una sola vez, al terminar la partida. Si la
+  pestaña se cierra a mitad de una partida, `pagehide`/`visibilitychange`
+  encolan el mejor local (`arcade-best-<juego>`) antes de vaciar: el récord no
+  se pierde aunque el jugador no haya muerto todavía.
 - Se escribe el máximo por juego, 6 s después del último récord.
 - El ID del documento es determinista: `<uid>_<juego>_<puntaje>`. Un reintento
   tras una recarga apunta al mismo documento, así que **no puede duplicar**.

@@ -288,6 +288,46 @@ export function __restoreQueueForTests() {
 }
 
 /**
+ * Red de durabilidad para el cierre a mitad de partida.
+ *
+ * Cada juego escribe su récord en `arcade-best-<game>` en el instante en que
+ * lo marca, pero `saveBest()` ahora se llama una sola vez al terminar la
+ * partida. Si el jugador cierra la pestaña con una partida en curso, ese
+ * máximo nunca llegaría a la cola: este barrido lo encola antes de que el
+ * navegador termine. No duplica nada — el ID del documento es determinista y
+ * `arcade-saved-*` marca lo ya escrito.
+ *
+ * No se ejecuta al arrancar a propósito: abrir el sitio no debe generar
+ * escrituras si el jugador no jugó. Sólo corre en el cierre de sesión.
+ *
+ * @returns {number} cantidad de juegos encolados por esta vía
+ */
+function seedFromLocalBests() {
+  let seeded = 0;
+  for (const game of GAME_IDS) {
+    let best = 0;
+    try {
+      best = Math.floor(Number(localStorage.getItem("arcade-best-" + game) || 0) || 0);
+    } catch {
+      return seeded; // storage bloqueado: no hay nada que rescatar
+    }
+    if (best <= 0) continue;
+    if (scoreIssue(game, best) !== "ok") continue;
+    if (best <= lastSaved(game)) continue;
+    if (best <= (pending.get(game) || 0)) continue;
+    pending.set(game, best);
+    seeded++;
+  }
+  if (seeded > 0) persistQueue();
+  return seeded;
+}
+
+/** Sólo para tests: ejecuta el barrido de mejores locales. */
+export function __seedQueueForTests() {
+  return seedFromLocalBests();
+}
+
+/**
  * Top de puntajes. Devuelve [] si la red está deshabilitada (modo local).
  * @param {number} n
  * @param {string|null} game
@@ -330,6 +370,8 @@ if (typeof window !== "undefined") {
   if (pending.size > 0) scheduleFlush(1500);
 
   window.addEventListener("pagehide", () => {
+    // Recoge la partida en curso (ver seedFromLocalBests) antes de vaciar.
+    seedFromLocalBests();
     flushScores();
   });
   window.addEventListener("online", () => {
@@ -339,7 +381,9 @@ if (typeof window !== "undefined") {
   });
   if (typeof document !== "undefined") {
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden") flushScores();
+      if (document.visibilityState !== "hidden") return;
+      seedFromLocalBests();
+      flushScores();
     });
   }
 }

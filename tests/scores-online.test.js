@@ -10,6 +10,7 @@ vi.mock("../src/lib/firebase.js", () => ({
 import {
   __resetQueueForTests,
   __restoreQueueForTests,
+  __seedQueueForTests,
   __setScoreBackendForTests,
   flushScores,
   getPendingScores,
@@ -141,5 +142,31 @@ describe("Escritura online del ranking", () => {
 
   it("el ID determinista codifica uid, juego y puntaje", () => {
     expect(scoreDocId("abc123", "tetris", 6100)).toBe("abc123_tetris_6100");
+  });
+});
+
+describe("Cierre a mitad de partida (red de durabilidad)", () => {
+  it("encola el mejor local aunque saveBest nunca se haya llamado", async () => {
+    // El juego escribe arcade-best-snake al marcar el récord, pero saveBest()
+    // sólo corre al morir: cerrar la pestaña antes no debe perderlo.
+    localStorage.setItem("arcade-best-snake", "500");
+
+    expect(__seedQueueForTests()).toBe(1);
+    expect(getPendingScores()).toEqual({ snake: 500 });
+    expect(JSON.parse(localStorage.getItem("arcade-queue-v1"))).toEqual({ snake: 500 });
+
+    const res = await flushScores();
+    expect(res).toEqual({ saved: 1, failed: 0 });
+    expect(backend.state.writes[0].id).toBe(scoreDocId("uid_test_1", "snake", 500));
+  });
+
+  it("ignora lo ya guardado, lo que supera el techo y los ceros", () => {
+    localStorage.setItem("arcade-saved-snake", "500");
+    localStorage.setItem("arcade-best-snake", "500");
+    localStorage.setItem("arcade-best-tetris", "999999");
+    localStorage.setItem("arcade-best-pacman", "0");
+
+    expect(__seedQueueForTests()).toBe(0);
+    expect(getPendingScores()).toEqual({});
   });
 });
